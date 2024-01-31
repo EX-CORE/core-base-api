@@ -1,6 +1,7 @@
 package com.core.base.corebase.controller.review
 
 import com.core.base.corebase.controller.review.dto.ReviewRes
+import com.core.base.corebase.controller.review.dto.ReviewerRes
 import com.core.base.corebase.domain.review.Review
 import com.core.base.corebase.service.review.ReviewService
 import org.springframework.web.bind.annotation.*
@@ -8,7 +9,7 @@ import java.util.UUID
 
 
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/reviews")
 class ReviewController(
     val reviewService: ReviewService
 ) {
@@ -17,5 +18,8 @@ class ReviewController(
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: UUID) : ReviewRes = reviewService.get(id)
+
+    @GetMapping("/users/{uid}")
+    fun listReview(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReview(uid)
 
 }
