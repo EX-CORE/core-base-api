@@ -4,12 +4,11 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
-@Document("review")
-class Review(
+@Document("reviewer")
+class Reviewer(
     @Id
-    val id: UUID,
-    val title: String,
-    val description: String,
-    val sections: List<ReviewSection>,
-    val companyId: Long
+    val id : UUID,
+    val reviewee : String,
+    val reviewer : String,
+    val reviewId: UUID,
 )
