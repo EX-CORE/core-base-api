@@ -8,7 +8,7 @@ import java.util.*
 class Reviewer(
     @Id
     val id : UUID,
-    val reviewee : String,
-    val reviewer : String,
+    val revieweeId : UUID,
+    val reviewerId : UUID,
     val reviewId: UUID,
 )

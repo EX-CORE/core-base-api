@@ -6,6 +6,5 @@ class ReviewerRes (
     val id: UUID,
     val name : String,
     val title: String,
-    val description: String,
-    val sections: List<ReviewerSectionRes>
+    val description: String
 )
