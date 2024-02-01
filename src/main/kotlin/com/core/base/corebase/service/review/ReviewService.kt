@@ -12,7 +12,9 @@ import com.core.base.corebase.repository.ReviewRepository
 import com.core.base.corebase.repository.ReviewerRepository
 import com.core.base.corebase.repository.UserRepository
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.util.*
+import java.util.stream.Collectors.groupingBy
 import kotlin.collections.List
 
 @Service
@@ -23,12 +25,12 @@ class ReviewService(
 ) {
     fun save(): Review {
         reviewRepository.save(
-            Review(
-                UUID.randomUUID(), "title", "desc",
-                listOf(
-                    ReviewSection(
-                        listOf(
-                            ReviewQuestion(
+            Review(UUID.randomUUID(), "title", "desc",
+                LocalDate.now(),
+                LocalDate.now(),
+                1L,
+                listOf(ReviewSection(
+                        listOf(ReviewQuestion(
                                 UUID.randomUUID(),
                                 "question",
                                 QuestionType.OBJECTIVE,
@@ -37,13 +39,13 @@ class ReviewService(
                                 1
                             )
                         ), 1
-                    )
-                ),
-                1L
-            )
+                    )),
+                userRepository.findAll().map { it -> it.uid },
+                )
         ).let { it ->
             userRepository.findAll()
-                .map { user -> reviewerRepository.save(Reviewer(UUID.randomUUID(), user.uid, user.uid, it.id)) }
+                .map { user ->
+                    reviewerRepository.save(Reviewer(UUID.randomUUID(), user.uid, user.uid, it.id)) }
             return it
         }
 
@@ -55,9 +57,21 @@ class ReviewService(
             }.orElseThrow()
 
 
-    fun listReview(id: UUID): List<ReviewerRes> =
+    fun listReviewByReviewee(id: UUID): List<ReviewerRes> =
         reviewerRepository.findByReviewerId(id)
             .map { it.toRes() }
+
+    fun listReviewByReviewer(id: UUID): List<ReviewerRes> =
+        reviewerRepository.findByRevieweeId(id)
+            .stream()
+            .collect(groupingBy(Reviewer::reviewId))
+            .entries.stream()
+            .map { it ->
+                reviewRepository.findById(it.key)
+                    .map { ReviewerRes(id, "", it.title, it.description) }
+                    .orElseThrow()
+            }
+            .toList()
 
     fun Reviewer.toRes(): ReviewerRes {
         var reviewee = userRepository.findByUid(revieweeId).orElseThrow()

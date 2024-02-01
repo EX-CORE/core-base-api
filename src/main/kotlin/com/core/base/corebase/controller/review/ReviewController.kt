@@ -19,7 +19,10 @@ class ReviewController(
     @GetMapping("/{id}")
     fun get(@PathVariable id: UUID) : ReviewRes = reviewService.get(id)
 
-    @GetMapping("/users/{uid}")
-    fun listReview(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReview(uid)
+    @GetMapping("/reviewee/{uid}")
+    fun listReviewByReviewee(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReviewByReviewee(uid)
+
+    @GetMapping("/reviewer/{uid}")
+    fun listReviewByReviewer(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReviewByReviewer(uid)
 
 }

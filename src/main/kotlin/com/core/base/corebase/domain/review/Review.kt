@@ -2,6 +2,7 @@ package com.core.base.corebase.domain.review
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.LocalDate
 import java.util.*
 
 @Document("review")
@@ -10,6 +11,9 @@ class Review(
     val id: UUID,
     val title: String,
     val description: String,
+    val startDate : LocalDate,
+    val endDate : LocalDate,
+    val companyId: Long,
     val sections: List<ReviewSection>,
-    val companyId: Long
+    val reviewerIds : List<UUID>
 )
