@@ -1,9 +1,6 @@
 package com.core.base.corebase.service.review
 
-import com.core.base.corebase.controller.review.dto.QuestionRes
-import com.core.base.corebase.controller.review.dto.ReviewRes
-import com.core.base.corebase.controller.review.dto.ReviewerRes
-import com.core.base.corebase.controller.review.dto.ReviewerSectionRes
+import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.domain.review.*
 import com.core.base.corebase.domain.review.code.ChoiceType
 import com.core.base.corebase.domain.review.code.QuestionType
@@ -23,32 +20,35 @@ class ReviewService(
     val reviewerRepository: ReviewerRepository,
     val userRepository: UserRepository
 ) {
-    fun save(): Review {
+    fun save(req: ReviewReq): Review {
         reviewRepository.save(
-            Review(UUID.randomUUID(), "title", "desc",
-                LocalDate.now(),
-                LocalDate.now(),
-                1L,
-                listOf(ReviewSection(
-                        listOf(ReviewQuestion(
-                                UUID.randomUUID(),
-                                "question",
-                                QuestionType.OBJECTIVE,
-                                ChoiceType.ANSWER_3,
-                                10,
-                                1
-                            )
-                        ), 1
-                    )),
-                userRepository.findAll().map { it -> it.uid },
-                )
+            Review(
+                UUID.randomUUID(),
+                req.title,
+                req.description,
+                req.startDate,
+                req.endDate,
+                req.companyId,
+                req.sections
+                    .map { it ->
+                        ReviewSection(
+                            it.questions
+                                .map { q ->
+                                    ReviewQuestion(
+                                        UUID.randomUUID(),
+                                        q.question, q.type, q.choiceType, q.limit, q.order
+                                    )
+                                }, it.order
+                        )
+                    },
+                req.reviewerIds)
         ).let { it ->
-            userRepository.findAll()
-                .map { user ->
-                    reviewerRepository.save(Reviewer(UUID.randomUUID(), user.uid, user.uid, it.id)) }
+            it.reviewerIds.map {
+                    uid ->
+                reviewerRepository.save(Reviewer(UUID.randomUUID(), uid, uid, it.id))
+            }
             return it
         }
-
     }
     fun get(id: UUID): ReviewRes =
         reviewRepository.findById(id)
@@ -68,7 +68,7 @@ class ReviewService(
             .entries.stream()
             .map { it ->
                 reviewRepository.findById(it.key)
-                    .map { ReviewerRes(id, "", it.title, it.description) }
+                    .map { ReviewerRes(id, "", it.title, it.description, it.startDate, it.endDate) }
                     .orElseThrow()
             }
             .toList()
@@ -76,12 +76,12 @@ class ReviewService(
     fun Reviewer.toRes(): ReviewerRes {
         var reviewee = userRepository.findByUid(revieweeId).orElseThrow()
         return reviewRepository.findById(reviewId)
-            .map { ReviewerRes(id, reviewee.name, it.title, it.description) }
+            .map { ReviewerRes(id, reviewee.name, it.title, it.description, it.startDate, it.endDate) }
             .orElseThrow()
     }
 
     private fun Review.toRes() =
-        ReviewRes(id, title, description, sections.map { it -> it.toRes() })
+        ReviewRes(id, title, description, startDate, endDate, sections.map { it -> it.toRes() })
 
     private fun ReviewSection.toRes() =
         ReviewerSectionRes(questions.map { it -> it.toRes() }, order)

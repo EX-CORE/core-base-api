@@ -13,7 +13,7 @@ class Review(
     val description: String,
     val startDate : LocalDate,
     val endDate : LocalDate,
-    val companyId: Long,
+    val companyId: UUID,
     val sections: List<ReviewSection>,
     val reviewerIds : List<UUID>
 )

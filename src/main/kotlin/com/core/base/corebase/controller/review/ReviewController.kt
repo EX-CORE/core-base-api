@@ -1,5 +1,6 @@
 package com.core.base.corebase.controller.review
 
+import com.core.base.corebase.controller.review.dto.ReviewReq
 import com.core.base.corebase.controller.review.dto.ReviewRes
 import com.core.base.corebase.controller.review.dto.ReviewerRes
 import com.core.base.corebase.domain.review.Review
@@ -14,7 +15,7 @@ class ReviewController(
     val reviewService: ReviewService
 ) {
     @PostMapping
-    fun save() : Review = reviewService.save()
+    fun save(@RequestBody req: ReviewReq) : Review = reviewService.save(req)
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: UUID) : ReviewRes = reviewService.get(id)
