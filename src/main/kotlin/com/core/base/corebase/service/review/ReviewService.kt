@@ -26,8 +26,8 @@ class ReviewService(
                 UUID.randomUUID(),
                 req.title,
                 req.description,
-                req.startDate,
-                req.endDate,
+                req.surveyPeriod,
+                req.reviewPeriod,
                 req.companyId,
                 req.sections
                     .map { it ->
@@ -41,7 +41,10 @@ class ReviewService(
                                 }, it.order
                         )
                     },
-                req.reviewerIds)
+                req.reviewerIds,
+                req.secretKey,
+                req.state
+            )
         ).let { it ->
             it.reviewerIds.map {
                     uid ->
@@ -68,7 +71,7 @@ class ReviewService(
             .entries.stream()
             .map { it ->
                 reviewRepository.findById(it.key)
-                    .map { ReviewerRes(id, "", it.title, it.description, it.startDate, it.endDate) }
+                    .map { ReviewerRes(id, "", it.title, it.description, it.surveyPeriod, it.reviewPeriod, it.state) }
                     .orElseThrow()
             }
             .toList()
@@ -76,12 +79,12 @@ class ReviewService(
     fun Reviewer.toRes(): ReviewerRes {
         var reviewee = userRepository.findByUid(revieweeId).orElseThrow()
         return reviewRepository.findById(reviewId)
-            .map { ReviewerRes(id, reviewee.name, it.title, it.description, it.startDate, it.endDate) }
+            .map { ReviewerRes(id, reviewee.name, it.title, it.description,  it.surveyPeriod, it.reviewPeriod, it.state) }
             .orElseThrow()
     }
 
     private fun Review.toRes() =
-        ReviewRes(id, title, description, startDate, endDate, sections.map { it -> it.toRes() })
+        ReviewRes(id, title, description, surveyPeriod, reviewPeriod, companyId, sections.map { it -> it.toRes() }, reviewerIds, state)
 
     private fun ReviewSection.toRes() =
         ReviewerSectionRes(questions.map { it -> it.toRes() }, order)

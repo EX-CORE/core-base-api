@@ -1,6 +1,7 @@
 package com.core.base.corebase.controller.review.dto
 
-import java.time.LocalDate
+import com.core.base.corebase.domain.review.Period
+import com.core.base.corebase.domain.review.code.StateType
 import java.util.*
 
 class ReviewerRes (
@@ -8,6 +9,7 @@ class ReviewerRes (
     val name : String,
     val title: String,
     val description: String,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
+    val surveyPeriod: Period,
+    val reviewPeriod: Period,
+    val state: StateType
 )
