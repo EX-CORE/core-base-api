@@ -5,10 +5,12 @@ import com.core.base.corebase.controller.review.dto.ReviewRes
 import com.core.base.corebase.controller.review.dto.ReviewerRes
 import com.core.base.corebase.domain.review.Review
 import com.core.base.corebase.service.review.ReviewService
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
-import java.util.UUID
+import java.util.*
 
 
+@Tag(name = "리뷰 API")
 @RestController
 @RequestMapping("/reviews")
 class ReviewController(
