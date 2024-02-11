@@ -1,5 +1,7 @@
 package com.core.base.corebase.service.review
 
+import com.core.base.corebase.common.exception.BaseException
+import com.core.base.corebase.common.exception.code.ErrorCode
 import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.domain.review.*
 import com.core.base.corebase.domain.review.code.ChoiceType
@@ -63,7 +65,7 @@ class ReviewService(
         reviewRepository.findById(id)
             .map {
                 it.toRes()
-            }.orElseThrow()
+            }.orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
 
 
     fun listReviewByReviewee(id: UUID): List<ReviewerRes> =
@@ -78,7 +80,7 @@ class ReviewService(
             .map { it ->
                 reviewRepository.findById(it.key)
                     .map { ReviewerRes(id, "", it.title, it.description, it.surveyPeriod, it.reviewPeriod, it.state) }
-                    .orElseThrow()
+                    .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
             }
             .toList()
 
@@ -86,7 +88,7 @@ class ReviewService(
         var reviewee = userRepository.findByUid(revieweeId).orElseThrow()
         return reviewRepository.findById(reviewId)
             .map { ReviewerRes(id, reviewee.name, it.title, it.description,  it.surveyPeriod, it.reviewPeriod, it.state) }
-            .orElseThrow()
+            .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
     }
 
     private fun Review.toRes() =
