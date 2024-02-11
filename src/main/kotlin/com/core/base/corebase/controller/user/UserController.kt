@@ -15,4 +15,5 @@ class UserController(
 ) {
     @PostMapping
     fun save(@RequestBody userReq: UserReq) : User = userService.save(userReq)
+
 }

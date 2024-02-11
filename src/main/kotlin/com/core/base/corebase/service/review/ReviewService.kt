@@ -9,6 +9,7 @@ import com.core.base.corebase.repository.ReviewRepository
 import com.core.base.corebase.repository.ReviewerRepository
 import com.core.base.corebase.repository.UserRepository
 import org.springframework.stereotype.Service
+import java.awt.Choice
 import java.time.LocalDate
 import java.util.*
 import java.util.stream.Collectors.groupingBy
@@ -36,7 +37,12 @@ class ReviewService(
                                 .map { q ->
                                     ReviewQuestion(
                                         UUID.randomUUID(),
-                                        q.question, q.type, q.choiceType, q.limit, q.order
+                                        q.question, q.type,
+                                        q.limit, q.order,
+                                        q.choices
+                                            .map { c ->
+                                                ReviewChoice(UUID.randomUUID(), c.label, c.order)
+                                            }
                                     )
                                 }, it.order
                         )
@@ -90,6 +96,9 @@ class ReviewService(
         ReviewerSectionRes(questions.map { it -> it.toRes() }, order)
 
     private fun ReviewQuestion.toRes() =
-        QuestionRes(id, question, type, choiceType, limit, order)
+        QuestionRes(id, question, type, choices.map { it -> it.toRes() }, limit, order)
+
+    private fun ReviewChoice.toRes() =
+        ChoiceRes(id, label, order)
 
 }

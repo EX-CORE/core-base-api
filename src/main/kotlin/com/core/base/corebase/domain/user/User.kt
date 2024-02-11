@@ -11,7 +11,7 @@ class User(
     val uid: UUID,
     val name: String,
     val email: String,
+    val companyId: UUID,
     val state: UserState = UserState.WAIT,
     val refreshToken: String?,
-    val companyId: UUID
 )

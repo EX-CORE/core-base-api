@@ -9,6 +9,7 @@ import com.core.base.corebase.domain.review.*
 import com.core.base.corebase.domain.review.code.ChoiceType
 import com.core.base.corebase.domain.review.code.QuestionType
 import com.core.base.corebase.domain.user.User
+import com.core.base.corebase.domain.user.code.UserState
 import com.core.base.corebase.repository.ReviewRepository
 import com.core.base.corebase.repository.ReviewerRepository
 import com.core.base.corebase.repository.UserRepository
@@ -21,6 +22,6 @@ class UserService(
 ) {
     fun save(req: UserReq): User =
         userRepository.save(
-            User(UUID.randomUUID(), req.email, req.name, req.companyId)
+            User(UUID.randomUUID(), req.email, req.name, req.companyId, UserState.WAIT, null)
         )
 }

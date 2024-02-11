@@ -7,7 +7,7 @@ import java.util.*
 class QuestionReq (
     val question: String,
     val type: QuestionType,
-    val choiceType: ChoiceType?,
+    val choices: List<ChoiceReq>,
     val limit: Int?,
     val order: Int
 ) 
