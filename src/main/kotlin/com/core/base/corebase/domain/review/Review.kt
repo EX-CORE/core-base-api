@@ -18,6 +18,6 @@ class Review(
     val companyId: UUID,
     val sections: List<ReviewSection>,
     val reviewerIds : List<UUID>,
-    val secretKey: String,
+    val secretKey: String?,
     val state: StateType
 )

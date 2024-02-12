@@ -10,5 +10,5 @@ class ReviewQuestion(
     val type: QuestionType,
     val limit: Int?,
     val order: Int,
-    val choices: List<ReviewChoice>,
+    val choices: List<ReviewChoice>?,
 )

@@ -132,7 +132,7 @@ class ReviewService(
         ReviewerSectionRes(questions.map { it -> it.toRes() }, order)
 
     private fun ReviewQuestion.toRes() =
-        QuestionRes(id, question, type, choices.map { it -> it.toRes() }, limit, order)
+        QuestionRes(id, question, type, choices?.map { it -> it.toRes() }, limit, order)
 
     private fun ReviewChoice.toRes() =
         ChoiceRes(id, label, order)
