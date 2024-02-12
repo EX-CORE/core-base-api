@@ -5,7 +5,7 @@ import com.core.base.corebase.domain.review.code.StateType
 import java.time.LocalDate
 import java.util.*
 
-class ReviewRes(
+class ReviewDetailRes(
     id: UUID,
     title: String,
     description: String,
@@ -14,5 +14,5 @@ class ReviewRes(
     companyId: UUID,
     sections: List<ReviewerSectionRes>,
     state: StateType,
-    val reviewerIds: List<UUID>
+    val revieweeName: String,
 ) : ReviewSimpleRes(id, title, description, surveyPeriod, reviewPeriod, companyId, sections, state)

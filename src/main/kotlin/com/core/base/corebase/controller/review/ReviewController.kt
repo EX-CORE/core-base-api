@@ -1,5 +1,6 @@
 package com.core.base.corebase.controller.review
 
+import com.core.base.corebase.controller.review.dto.ReviewDetailRes
 import com.core.base.corebase.controller.review.dto.ReviewReq
 import com.core.base.corebase.controller.review.dto.ReviewRes
 import com.core.base.corebase.controller.review.dto.ReviewerRes
@@ -21,6 +22,9 @@ class ReviewController(
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: UUID) : ReviewRes = reviewService.get(id)
+
+    @GetMapping("/{id}/reviewee/{uid}")
+    fun getReviewByReviewee(@PathVariable(name = "id") id: UUID, @PathVariable(name = "uid") uid: UUID) : ReviewDetailRes = reviewService.getReview(id, uid)
 
     @GetMapping("/reviewee/{uid}")
     fun listReviewByReviewee(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReviewByReviewee(uid)

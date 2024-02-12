@@ -4,15 +4,10 @@ import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.exception.code.ErrorCode
 import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.domain.review.*
-import com.core.base.corebase.domain.review.code.ChoiceType
-import com.core.base.corebase.domain.review.code.QuestionType
-import com.core.base.corebase.domain.user.User
 import com.core.base.corebase.repository.ReviewRepository
 import com.core.base.corebase.repository.ReviewerRepository
 import com.core.base.corebase.repository.UserRepository
 import org.springframework.stereotype.Service
-import java.awt.Choice
-import java.time.LocalDate
 import java.util.*
 import java.util.stream.Collectors.groupingBy
 import kotlin.collections.List
@@ -67,6 +62,17 @@ class ReviewService(
                 it.toRes()
             }.orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
 
+    fun getReview(id: UUID, revieweeId: UUID): ReviewDetailRes =
+        reviewRepository.findById(id)
+            .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+            .let {
+                review ->
+                val reviewerId = UUID.randomUUID()
+                reviewerRepository.findByReviewIdAndRevieweeIdAndReviewerId(id, revieweeId, reviewerId)
+                    .orElseThrow { throw BaseException(ErrorCode.REVIEWER_NOT_ALLOWED, id) }
+                review.toDetailRes(revieweeId)
+            }
+
 
     fun listReviewByReviewee(id: UUID): List<ReviewerRes> =
         reviewerRepository.findByReviewerId(id)
@@ -91,8 +97,36 @@ class ReviewService(
             .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
     }
 
+
+    private fun Review.toDetailRes(revieweeId: UUID): ReviewDetailRes {
+        var reviewee =
+            userRepository.findByUid(revieweeId)
+                .orElseThrow { throw BaseException(ErrorCode.USER_NOT_FOUND, revieweeId) }
+        return ReviewDetailRes(
+            id,
+            title,
+            description,
+            surveyPeriod,
+            reviewPeriod,
+            companyId,
+            sections.map { it -> it.toRes() },
+            state,
+            reviewee.name
+        )
+    }
+
     private fun Review.toRes() =
-        ReviewRes(id, title, description, surveyPeriod, reviewPeriod, companyId, sections.map { it -> it.toRes() }, reviewerIds, state)
+        ReviewRes(
+            id,
+            title,
+            description,
+            surveyPeriod,
+            reviewPeriod,
+            companyId,
+            sections.map { it -> it.toRes() },
+            state,
+            reviewerIds
+        )
 
     private fun ReviewSection.toRes() =
         ReviewerSectionRes(questions.map { it -> it.toRes() }, order)
