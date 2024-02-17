@@ -12,5 +12,6 @@ class Company(
     val ceo: String,
     val telNumber: String,
     val address: String,
-    val projects: List<Project>
+    val projects: List<Project>,
+    val teams: List<Team>
 )
