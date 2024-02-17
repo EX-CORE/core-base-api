@@ -13,6 +13,6 @@ class UserService(
 ) {
     fun save(req: UserReq): User =
         userRepository.save(
-            User(UUID.randomUUID(), req.email, req.name, req.companyId, UserState.WAIT, null)
+            User(UUID.randomUUID(), req.email, req.name, req.companyId, UserState.WAIT, null, req.teamId)
         )
 }

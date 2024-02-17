@@ -14,4 +14,5 @@ class User(
     val companyId: UUID,
     val state: UserState = UserState.WAIT,
     val refreshToken: String?,
+    val teamId: UUID,
 )
