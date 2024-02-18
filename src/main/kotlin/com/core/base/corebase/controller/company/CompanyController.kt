@@ -1,5 +1,8 @@
 package com.core.base.corebase.controller.company
 
+import com.core.base.corebase.controller.company.dto.CompanyReq
+import com.core.base.corebase.controller.company.dto.CompanyRes
+import com.core.base.corebase.controller.company.dto.TeamRes
 import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.service.company.CompanyService
 import io.swagger.v3.oas.annotations.tags.Tag

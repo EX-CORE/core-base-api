@@ -1,4 +1,4 @@
-package com.core.base.corebase.controller.review.dto
+package com.core.base.corebase.controller.company.dto
 
 import java.util.*
 
