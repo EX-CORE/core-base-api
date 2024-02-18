@@ -1,11 +1,7 @@
 package com.core.base.corebase.controller.review.dto
 
-import java.util.*
-
-class TeamRes(
-    val id: UUID,
+class TeamReq(
     val name: String,
     val order: Int,
-    var parentsId: UUID? = null
-
+    val subTeams: List<TeamReq>?,
 )

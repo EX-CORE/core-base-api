@@ -1,10 +1,6 @@
 package com.core.base.corebase.controller.company
 
-import com.core.base.corebase.controller.review.dto.CompanyRes
-import com.core.base.corebase.controller.review.dto.ReviewReq
-import com.core.base.corebase.controller.review.dto.ReviewRes
-import com.core.base.corebase.controller.review.dto.TeamRes
-import com.core.base.corebase.domain.review.Review
+import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.service.company.CompanyService
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
@@ -17,6 +13,10 @@ import java.util.*
 class CompanyController(
     val companyService: CompanyService
 ) {
+
+    @PostMapping
+    fun save(@RequestBody req: CompanyReq): CompanyRes =
+        companyService.save(req)
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: UUID): CompanyRes =

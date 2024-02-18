@@ -28,7 +28,7 @@ class ReviewService(
                 req.reviewPeriod,
                 req.companyId,
                 req.sections
-                    .map { it ->
+                    .map {
                         ReviewSection(
                             it.questions
                                 .map { q ->
@@ -48,7 +48,7 @@ class ReviewService(
                 req.secretKey,
                 req.state
             )
-        ).let { it ->
+        ).let {
             it.reviewerIds.map {
                     uid ->
                 reviewerRepository.save(Reviewer(UUID.randomUUID(), uid, uid, it.id))
@@ -56,6 +56,7 @@ class ReviewService(
             return it
         }
     }
+
     fun get(id: UUID): ReviewRes =
         reviewRepository.findById(id)
             .map {
@@ -90,8 +91,8 @@ class ReviewService(
             }
             .toList()
 
-    fun Reviewer.toRes(): ReviewerRes {
-        var reviewee = userRepository.findByUid(revieweeId).orElseThrow()
+    private fun Reviewer.toRes(): ReviewerRes {
+        val reviewee = userRepository.findByUid(revieweeId).orElseThrow()
         return reviewRepository.findById(reviewId)
             .map { ReviewerRes(id, reviewee.name, it.title, it.description,  it.surveyPeriod, it.reviewPeriod, it.state) }
             .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
@@ -99,7 +100,7 @@ class ReviewService(
 
 
     private fun Review.toDetailRes(revieweeId: UUID): ReviewDetailRes {
-        var reviewee =
+        val reviewee =
             userRepository.findByUid(revieweeId)
                 .orElseThrow { throw BaseException(ErrorCode.USER_NOT_FOUND, revieweeId) }
         return ReviewDetailRes(
@@ -109,7 +110,7 @@ class ReviewService(
             surveyPeriod,
             reviewPeriod,
             companyId,
-            sections.map { it -> it.toRes() },
+            sections.map { it.toRes() },
             state,
             reviewee.name
         )
@@ -123,13 +124,13 @@ class ReviewService(
             surveyPeriod,
             reviewPeriod,
             companyId,
-            sections.map { it -> it.toRes() },
+            sections.map { it.toRes() },
             state,
             reviewerIds
         )
 
     private fun ReviewSection.toRes() =
-        ReviewerSectionRes(questions.map { it -> it.toRes() }, order)
+        ReviewerSectionRes(questions.map { it.toRes() }, order)
 
     private fun ReviewQuestion.toRes() =
         QuestionRes(id, question, type, choices?.map { it -> it.toRes() }, limit, order)

@@ -2,9 +2,7 @@ package com.core.base.corebase.service.company
 
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.exception.code.ErrorCode
-import com.core.base.corebase.controller.review.dto.CompanyRes
-import com.core.base.corebase.controller.review.dto.ProjectRes
-import com.core.base.corebase.controller.review.dto.TeamRes
+import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.domain.company.Company
 import com.core.base.corebase.domain.company.Project
 import com.core.base.corebase.domain.company.Team
@@ -20,15 +18,37 @@ class CompanyService(
     var companyRepository: CompanyRepository
 ) {
 
+    fun save(req: CompanyReq): CompanyRes =
+        companyRepository.save(
+            Company(
+                UUID.randomUUID(),
+                req.name,
+                req.ceo,
+                req.telNumber,
+                req.address,
+                req.projects.map { Project(UUID.randomUUID(), it) },
+                req.teams.map { saveTeam(it, null) }.flatten()
+            )
+        ).toRes()
+
     fun get(id: UUID): CompanyRes =
         getRes(id)
 
     fun listTeam(id: UUID): List<TeamRes> =
         getRes(id).teams
 
+    private fun saveTeam(teamReq: TeamReq, parentsId: UUID?): List<Team> {
+        val teamList : MutableList<Team> = mutableListOf()
+        val team = Team(UUID.randomUUID(), teamReq.name, teamReq.order, parentsId)
+        teamList.add(team)
+        if (!teamReq.subTeams.isNullOrEmpty())
+            teamList.addAll( teamReq.subTeams.map { saveTeam(it, team.id) }.flatten())
+        return teamList
+    }
+
     private fun getRes(id: UUID) =
         companyRepository.findById(id)
-            .map { it -> it.toRes() }
+            .map { it.toRes() }
             .orElseThrow { BaseException(ErrorCode.COMPANY_NOT_FOUND, id) }
 
     private fun Company.toRes(): CompanyRes =
@@ -42,5 +62,5 @@ class CompanyService(
         ProjectRes(id, name)
 
     fun Team.toRes(): TeamRes =
-        TeamRes(id, name, parentId)
+        TeamRes(id, name, order, parentId)
 }
