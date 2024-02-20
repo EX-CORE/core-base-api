@@ -5,3 +5,21 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
     default-property-inclusion: non_null
+
+feign:
+  retry:
+    period: 1000
+    max-period: 10000
+    max-attempts: 5
+
+oauth:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect-url: ${GOOGLE_REDIRECT_URL}
+
+auth:
+  jwt:
+    secret-key: ${JWT_SECRET}
+    access-exp: ${JWT_ACCESS_EXP}
+    refresh-exp: ${JWT_REFRESH_EXP}
