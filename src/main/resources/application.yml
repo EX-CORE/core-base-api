@@ -5,6 +5,8 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
     default-property-inclusion: non_null
+server:
+  port: 8081
 
 feign:
   retry:
