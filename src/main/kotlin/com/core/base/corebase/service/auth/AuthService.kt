@@ -30,7 +30,7 @@ class AuthService(
     fun getUserGoogleCode(type: ServerType): String = with(googleProperties) {
         "https://accounts.google.com/o/oauth2/v2/auth" +
                 "?client_id=${clientId}" +
-                "&scope=https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/calendar.readonly%20https://www.googleapis.com/auth/calendar" +
+                "&scope=https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile" +
                 "&response_type=code&access_type=offline" +
                 "&state=state_parameter_passthrough_value&include_granted_scopes=true" +
                 "&redirect_uri=${URLEncoder.encode(if (type == ServerType.PROD) redirectUrl else "http://localhost:5000/login", "UTF-8")}" +
