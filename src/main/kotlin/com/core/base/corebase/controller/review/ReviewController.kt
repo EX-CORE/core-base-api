@@ -32,7 +32,7 @@ class ReviewController(
     @GetMapping("/reviewer/{uid}")
     fun listReviewByReviewer(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReviewByReviewer(uid)
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/pause")
     fun pause(@PathVariable id: UUID) = reviewService.pause(id)
 
 }
