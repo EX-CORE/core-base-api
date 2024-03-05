@@ -52,7 +52,7 @@ class AuthService(
         authResponse.run { googleInfoClient.getInfo("Bearer $accessToken") }
             .let { googleInfoRes ->
                 val user = userRepository.findByEmail(googleInfoRes.email)
-                    .orElseThrow { throw BaseException(ErrorCode.COMPANY_NOT_FOUND) }
+                    .orElseThrow { throw BaseException(ErrorCode.USER_NOT_FOUND) }
                 accountRepository.save(Account(user.uid, authResponse.refreshToken));
             }
             .run { AuthDto.LoginRes(jwtProvider.generateAccessToken(uid), jwtProvider.generateRefreshToken(uid)) }

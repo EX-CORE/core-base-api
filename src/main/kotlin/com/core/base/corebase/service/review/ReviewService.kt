@@ -8,6 +8,7 @@ import com.core.base.corebase.repository.ReviewRepository
 import com.core.base.corebase.repository.ReviewerRepository
 import com.core.base.corebase.repository.UserRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 import java.util.stream.Collectors.groupingBy
 import kotlin.collections.List
@@ -91,6 +92,14 @@ class ReviewService(
             }
             .toList()
 
+    @Transactional
+    fun pause(id: UUID) : Unit =
+            reviewRepository.findById(id)
+                    .map {
+                        it.pause()
+                    }.orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+
+
     private fun Reviewer.toRes(): ReviewerRes {
         val reviewee = userRepository.findByUid(revieweeId).orElseThrow()
         return reviewRepository.findById(reviewId)
@@ -133,7 +142,7 @@ class ReviewService(
         ReviewerSectionRes(questions.map { it.toRes() }, order)
 
     private fun ReviewQuestion.toRes() =
-        QuestionRes(id, question, type, choices?.map { it -> it.toRes() }, limit, order)
+        QuestionRes(id, question, type, choices?.map { it.toRes() }, limit, order)
 
     private fun ReviewChoice.toRes() =
         ChoiceRes(id, label, order)

@@ -4,5 +4,7 @@ enum class StateType {
     TEMP,
     PROCESS,
     PAUSE,
-    DELETED
+    DELETED;
+
+    fun isInActive() = mutableListOf(PAUSE, DELETED).contains(this)
 }
