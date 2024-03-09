@@ -145,6 +145,6 @@ class ReviewService(
         QuestionRes(id, question, type, choices?.map { it.toRes() }, limit, order)
 
     private fun ReviewChoice.toRes() =
-        ChoiceRes(id, label, order)
+        ChoiceRes(id, label, order, score)
 
 }
