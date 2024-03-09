@@ -11,4 +11,6 @@ class ReviewQuestion(
     val limit: Int?,
     val order: Int,
     val choices: List<ReviewChoice>?,
+    val useScore: Boolean,
+    val useMultiSelect: Boolean,
 )

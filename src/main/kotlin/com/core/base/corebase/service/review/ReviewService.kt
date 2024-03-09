@@ -31,6 +31,7 @@ class ReviewService(
                 req.sections
                     .map {
                         ReviewSection(
+                            it.name,
                             it.questions
                                 .map { q ->
                                     ReviewQuestion(
@@ -39,8 +40,10 @@ class ReviewService(
                                         q.limit, q.order,
                                         q.choices
                                             .map { c ->
-                                                ReviewChoice(UUID.randomUUID(), c.label, c.order)
-                                            }
+                                                ReviewChoice(UUID.randomUUID(), c.label, c.order, c.score)
+                                            },
+                                        q.useScore,
+                                        q.useMultiSelect
                                     )
                                 }, it.order
                         )
@@ -139,10 +142,10 @@ class ReviewService(
         )
 
     private fun ReviewSection.toRes() =
-        ReviewerSectionRes(questions.map { it.toRes() }, order)
+        ReviewerSectionRes(name, questions.map { it.toRes() }, order)
 
     private fun ReviewQuestion.toRes() =
-        QuestionRes(id, question, type, choices?.map { it.toRes() }, limit, order)
+        QuestionRes(id, question, type, choices?.map { it.toRes() }, limit, order, useScore, useMultiSelect)
 
     private fun ReviewChoice.toRes() =
         ChoiceRes(id, label, order, score)
