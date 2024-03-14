@@ -2,8 +2,10 @@ package com.core.base.corebase.service.review
 
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.exception.code.ErrorCode
+import com.core.base.corebase.controller.company.dto.ProjectRes
 import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.domain.review.*
+import com.core.base.corebase.repository.CompanyRepository
 import com.core.base.corebase.repository.ReviewRepository
 import com.core.base.corebase.repository.ReviewerRepository
 import com.core.base.corebase.repository.UserRepository
@@ -11,12 +13,12 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 import java.util.stream.Collectors.groupingBy
-import kotlin.collections.List
 
 @Service
 class ReviewService(
     val reviewRepository: ReviewRepository,
     val reviewerRepository: ReviewerRepository,
+    val companyRepository: CompanyRepository,
     val userRepository: UserRepository
 ) {
     fun save(req: ReviewReq): Review {
@@ -50,7 +52,8 @@ class ReviewService(
                     },
                 req.reviewerIds,
                 req.secretKey,
-                req.state
+                req.state,
+                req.projectIds
             )
         ).let {
             it.reviewerIds.map {
@@ -124,6 +127,7 @@ class ReviewService(
             companyId,
             sections.map { it.toRes() },
             state,
+            getProjects(companyId, projectIds),
             reviewee.name
         )
     }
@@ -138,7 +142,8 @@ class ReviewService(
             companyId,
             sections.map { it.toRes() },
             state,
-            reviewerIds
+            getProjects(companyId, projectIds),
+            reviewerIds,
         )
 
     private fun ReviewSection.toRes() =
@@ -150,4 +155,14 @@ class ReviewService(
     private fun ReviewChoice.toRes() =
         ChoiceRes(id, label, order, score)
 
+    private fun getProjects(companyId: UUID, ids: List<UUID>) =
+        companyRepository.findById(companyId)
+            .orElseThrow{ throw BaseException(ErrorCode.COMPANY_NOT_FOUND, companyId) }
+            .let {
+                it.projects.stream()
+                    .filter { project -> ids.contains(project.id) }
+                    .toList()
+            }.map {
+                ProjectRes(it.id, it.name)
+            }
 }

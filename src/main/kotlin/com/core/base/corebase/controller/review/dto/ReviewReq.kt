@@ -13,5 +13,6 @@ class ReviewReq(
     val sections: List<ReviewerSectionReq>,
     val reviewerIds: List<UUID>,
     val state: StateType,
-    val secretKey: String
+    val secretKey: String,
+    val projectIds: List<UUID>,
 )

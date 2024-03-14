@@ -2,6 +2,7 @@ package com.core.base.corebase.domain.review
 
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.exception.code.ErrorCode
+import com.core.base.corebase.domain.company.Project
 import com.core.base.corebase.domain.review.code.StateType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -21,7 +22,8 @@ class Review(
         val sections: List<ReviewSection>,
         val reviewerIds : List<UUID>,
         var secretKey: String?,
-        var state: StateType
+        var state: StateType,
+        var projectIds: List<UUID>
 ) {
 
     fun pause() {
