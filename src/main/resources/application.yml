@@ -23,6 +23,3 @@ auth:
     secret-key: ${JWT_SECRET}
     access-exp: ${JWT_ACCESS_EXP}
     refresh-exp: ${JWT_REFRESH_EXP}
-
-server:
-  port: 8081
