@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 
-@Tag(name = "회사 API")
+@Tag(name = "조직 API")
 @RestController
 @RequestMapping("/company")
 class CompanyController(
