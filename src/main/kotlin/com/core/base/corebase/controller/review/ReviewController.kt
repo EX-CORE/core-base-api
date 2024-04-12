@@ -1,11 +1,9 @@
 package com.core.base.corebase.controller.review
 
-import com.core.base.corebase.controller.review.dto.ReviewDetailRes
-import com.core.base.corebase.controller.review.dto.ReviewReq
-import com.core.base.corebase.controller.review.dto.ReviewRes
-import com.core.base.corebase.controller.review.dto.ReviewerRes
+import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.domain.review.Review
 import com.core.base.corebase.service.review.ReviewService
+import com.core.base.corebase.service.review.SurveyService
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -15,7 +13,8 @@ import java.util.*
 @RestController
 @RequestMapping("/reviews")
 class ReviewController(
-    val reviewService: ReviewService
+    val reviewService: ReviewService,
+    val surveyService: SurveyService
 ) {
     @PostMapping
     fun save(@RequestBody req: ReviewReq) : Review = reviewService.save(req)
@@ -34,5 +33,12 @@ class ReviewController(
 
     @PostMapping("/{id}/pause")
     fun pause(@PathVariable id: UUID) = reviewService.pause(id)
+
+    @GetMapping("/{id}/surveys")
+    fun getSurvey(@PathVariable id: UUID) : ReviewSurveyRes = surveyService.get(id)
+
+    @PostMapping("/{id}/surveys")
+    fun saveSurvey(@PathVariable id: UUID, @RequestBody req: ReviewSurveyReq) = surveyService.save(id, req)
+
 
 }

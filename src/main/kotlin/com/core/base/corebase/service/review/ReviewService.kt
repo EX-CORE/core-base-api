@@ -2,6 +2,7 @@ package com.core.base.corebase.service.review
 
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.exception.code.ErrorCode
+import com.core.base.corebase.config.AuthenticationFacade
 import com.core.base.corebase.controller.company.dto.ProjectRes
 import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.domain.review.*
@@ -19,6 +20,7 @@ class ReviewService(
     val reviewRepository: ReviewRepository,
     val reviewerRepository: ReviewerRepository,
     val companyRepository: CompanyRepository,
+    val authenticationFacade: AuthenticationFacade,
     val userRepository: UserRepository
 ) {
     fun save(req: ReviewReq): Review {
