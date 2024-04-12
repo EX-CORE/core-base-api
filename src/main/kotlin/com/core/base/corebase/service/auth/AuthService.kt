@@ -7,14 +7,13 @@ import com.core.base.corebase.client.dto.GoogleDto
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.exception.code.ErrorCode
 import com.core.base.corebase.common.exception.code.ServerType
+import com.core.base.corebase.config.GoogleProperties
 import com.core.base.corebase.domain.user.Account
 import com.core.base.corebase.repository.AccountRepository
 import com.core.base.corebase.repository.UserRepository
-import com.core.base.corebase.config.GoogleProperties
 import com.core.base.corebase.support.JwtProvider
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.net.URLEncoder
 
 @Service
 class AuthService(
@@ -27,13 +26,13 @@ class AuthService(
 ) {
 
 
-    fun getUserGoogleCode(type: ServerType): String = with(googleProperties) {
+    fun getUserGoogleCode(): String = with(googleProperties) {
         "https://accounts.google.com/o/oauth2/v2/auth" +
                 "?client_id=${clientId}" +
                 "&scope=https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile" +
                 "&response_type=code&access_type=offline" +
                 "&state=state_parameter_passthrough_value&include_granted_scopes=true" +
-                "&redirect_uri=${URLEncoder.encode(if (type == ServerType.PROD) redirectUrl else "http://localhost:5000/login", "UTF-8")}" +
+                "&redirect_uri=http://localhost:3000/login" +
                 "&prompt=consent"
     }
 

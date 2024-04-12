@@ -16,8 +16,8 @@ class AuthController(
 ) {
 
     @GetMapping("${AUTH}/code")
-    fun moveUserGoogleCode(@RequestParam("type") type: ServerType): String =
-        "redirect:${authService.getUserGoogleCode(type)}"
+    fun moveUserGoogleCode(): String =
+        "redirect:${authService.getUserGoogleCode()}"
 
     @ResponseBody
     @PostMapping("${AUTH}/login")
