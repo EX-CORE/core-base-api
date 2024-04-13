@@ -1,4 +1,4 @@
-package com.core.base.corebase.common.exception.code
+package com.core.base.corebase.common.code
 
 import org.springframework.http.HttpStatus
 

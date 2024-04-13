@@ -5,8 +5,8 @@ import com.core.base.corebase.client.GoogleInfoClient
 import com.core.base.corebase.client.dto.AuthDto
 import com.core.base.corebase.client.dto.GoogleDto
 import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.common.exception.code.ErrorCode
-import com.core.base.corebase.common.exception.code.ServerType
+import com.core.base.corebase.common.code.ErrorCode
+import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.config.GoogleProperties
 import com.core.base.corebase.domain.user.Account
 import com.core.base.corebase.repository.AccountRepository
@@ -26,24 +26,24 @@ class AuthService(
 ) {
 
 
-    fun getUserGoogleCode(): String = with(googleProperties) {
+    fun getUserGoogleCode(type: LoginType): String = with(googleProperties) {
         "https://accounts.google.com/o/oauth2/v2/auth" +
                 "?client_id=${clientId}" +
                 "&scope=https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile" +
                 "&response_type=code&access_type=offline" +
                 "&state=state_parameter_passthrough_value&include_granted_scopes=true" +
-                "&redirect_uri=http://localhost:3000/login" +
+                "&redirect_uri=${redirectUrl}/${type.url}" +
                 "&prompt=consent"
     }
 
 
     @Transactional
-    fun login(code: String, type: ServerType): AuthDto.LoginRes = with(googleProperties) {
+    fun login(code: String, type: LoginType): AuthDto.LoginRes = with(googleProperties) {
         val authResponse = GoogleDto.GoogleTokenReq(
             code,
             clientId,
             clientSecret,
-            if (type == ServerType.PROD) redirectUrl else "http://localhost:5000/login",
+            "${redirectUrl}/${type.url}",
             "authorization_code"
         ).let {
             googleAuthClient.getTokenByCode(it)

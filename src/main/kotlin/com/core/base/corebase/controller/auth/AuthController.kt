@@ -1,10 +1,9 @@
 package com.core.base.corebase.controller.auth
 
 import com.core.base.corebase.client.dto.AuthDto
-import com.core.base.corebase.common.exception.code.ServerType
+import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.service.auth.AuthService
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.servlet.http.HttpServletResponse
 import org.apache.naming.ResourceRef.AUTH
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
@@ -16,12 +15,12 @@ class AuthController(
 ) {
 
     @GetMapping("${AUTH}/code")
-    fun moveUserGoogleCode(): String =
-        "redirect:${authService.getUserGoogleCode()}"
+    fun moveUserGoogleCode(@RequestParam("type") type: LoginType): String =
+        "redirect:${authService.getUserGoogleCode(type)}"
 
     @ResponseBody
     @PostMapping("${AUTH}/login")
-    fun login(@RequestParam("code") code: String, @RequestParam("type") type: ServerType): AuthDto.LoginRes =
+    fun login(@RequestParam("code") code: String, @RequestParam("type") type: LoginType): AuthDto.LoginRes =
         authService.login(code, type)
 
     @ResponseBody

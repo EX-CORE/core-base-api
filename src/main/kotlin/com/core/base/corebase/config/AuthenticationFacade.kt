@@ -1,7 +1,7 @@
 package com.core.base.corebase.config
 
 import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.common.exception.code.ErrorCode
+import com.core.base.corebase.common.code.ErrorCode
 import org.springframework.stereotype.Component
 import org.springframework.web.context.annotation.RequestScope
 import java.util.*

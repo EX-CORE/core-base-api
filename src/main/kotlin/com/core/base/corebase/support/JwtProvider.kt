@@ -1,7 +1,7 @@
 package com.core.base.corebase.support
 
 import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.common.exception.code.ErrorCode
+import com.core.base.corebase.common.code.ErrorCode
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm.HS512

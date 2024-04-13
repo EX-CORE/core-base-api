@@ -1,7 +1,7 @@
 package com.core.base.corebase.service.review
 
 import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.common.exception.code.ErrorCode
+import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.config.AuthenticationFacade
 import com.core.base.corebase.controller.company.dto.ProjectRes
 import com.core.base.corebase.controller.review.dto.*

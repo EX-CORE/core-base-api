@@ -1,6 +1,6 @@
 package com.core.base.corebase.common.exception
 
-import com.core.base.corebase.common.exception.code.ErrorCode
+import com.core.base.corebase.common.code.ErrorCode
 import org.springframework.http.HttpStatus
 
 class BaseException(

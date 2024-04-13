@@ -1,14 +1,12 @@
 package com.core.base.corebase.domain.review
 
 import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.common.exception.code.ErrorCode
-import com.core.base.corebase.domain.company.Project
+import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.domain.review.code.StateType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
 import java.util.*
-import javax.crypto.SecretKey
 
 @Document("review")
 class Review(
