@@ -5,7 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.UUID
 
 interface AccountRepository : MongoRepository<Account, UUID> {
-
     fun findByUid(uuid: UUID): Account?
-
 }

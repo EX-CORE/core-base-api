@@ -3,7 +3,6 @@ package com.core.base.corebase.domain.review
 import com.core.base.corebase.domain.review.code.QuestionType
 import java.util.*
 
-
 class ReviewQuestion(
     val id : UUID,
     val question: String,

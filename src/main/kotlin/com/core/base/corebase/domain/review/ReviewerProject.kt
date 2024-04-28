@@ -6,6 +6,4 @@ class ReviewerProject(
     val projectId: UUID,
     val reviewerIds : UUID,
     val reviewId: UUID,
-) {
-    
-}
+)

@@ -24,69 +24,64 @@ class ReviewService(
     val userRepository: UserRepository
 ) {
     fun save(req: ReviewReq): Review {
-        reviewRepository.save(
-            Review(
-                UUID.randomUUID(),
-                req.title,
-                req.description,
-                req.surveyPeriod,
-                req.reviewPeriod,
-                req.companyId,
-                req.sections
-                    .map {
-                        ReviewSection(
-                            it.name,
-                            it.questions
-                                .map { q ->
-                                    ReviewQuestion(
-                                        UUID.randomUUID(),
-                                        q.question, q.type,
-                                        q.limit, q.order,
-                                        q.choices
-                                            .map { c ->
-                                                ReviewChoice(UUID.randomUUID(), c.label, c.order, c.score)
-                                            },
-                                        q.useScore,
-                                        q.useMultiSelect
-                                    )
-                                }, it.order
+        val section = req.sections
+            .map {
+                ReviewSection(
+                    it.name,
+                    it.questions.map { q ->
+                        ReviewQuestion(
+                            UUID.randomUUID(),
+                            q.question, q.type,
+                            q.limit, q.order,
+                            q.choices.map { c -> ReviewChoice(UUID.randomUUID(), c.label, c.order, c.score) },
+                            q.useScore,
+                            q.useMultiSelect
                         )
                     },
-                req.reviewerIds,
-                req.secretKey,
-                req.state,
-                req.projectIds
-            )
-        ).let {
-            it.reviewerIds.map {
-                    uid ->
-                reviewerRepository.save(Reviewer(UUID.randomUUID(), uid, uid, it.id))
+                    it.order
+                )
+            };
+
+        val review = Review(
+            UUID.randomUUID(),
+            req.title,
+            req.description,
+            req.surveyPeriod,
+            req.reviewPeriod,
+            req.companyId,
+            section,
+            req.reviewerIds,
+            req.secretKey,
+            req.state,
+            req.projectIds
+        )
+
+        return reviewRepository.save(review)
+            .apply {
+                reviewerIds.forEach { uid ->
+                    reviewerRepository.save(Reviewer(UUID.randomUUID(), uid, uid, id))
+                }
             }
-            return it
-        }
     }
 
     fun get(id: UUID): ReviewRes =
         reviewRepository.findById(id)
-            .map {
-                it.toRes()
-            }.orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+            .map { it.toRes() }
+            .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
 
     fun getReview(id: UUID, revieweeId: UUID): ReviewDetailRes =
         reviewRepository.findById(id)
             .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
             .let {
-                review ->
                 val reviewerId = UUID.randomUUID()
                 reviewerRepository.findByReviewIdAndRevieweeIdAndReviewerId(id, revieweeId, reviewerId)
                     .orElseThrow { throw BaseException(ErrorCode.REVIEWER_NOT_ALLOWED, id) }
-                review.toDetailRes(revieweeId)
+                it.toDetailRes(revieweeId)
             }
 
 
     fun listReviewByReviewee(id: UUID): List<ReviewerRes> =
-        reviewerRepository.findByReviewerId(id)
-            .map { it.toRes() }
+        reviewerRepository.findByReviewerId(id).map { it.toRes() }
 
     fun listReviewByReviewer(id: UUID): List<ReviewerRes> =
         reviewerRepository.findByRevieweeId(id)
@@ -103,9 +98,8 @@ class ReviewService(
     @Transactional
     fun pause(id: UUID) : Unit =
             reviewRepository.findById(id)
-                    .map {
-                        it.pause()
-                    }.orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+                .map { it.pause() }
+                .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
 
 
     private fun Reviewer.toRes(): ReviewerRes {
@@ -117,9 +111,9 @@ class ReviewService(
 
 
     private fun Review.toDetailRes(revieweeId: UUID): ReviewDetailRes {
-        val reviewee =
-            userRepository.findByUid(revieweeId)
-                .orElseThrow { throw BaseException(ErrorCode.USER_NOT_FOUND, revieweeId) }
+        val reviewee = userRepository.findByUid(revieweeId)
+            .orElseThrow { throw BaseException(ErrorCode.USER_NOT_FOUND, revieweeId) }
+
         return ReviewDetailRes(
             id,
             title,
@@ -164,7 +158,5 @@ class ReviewService(
                 it.projects.stream()
                     .filter { project -> ids.contains(project.id) }
                     .toList()
-            }.map {
-                ProjectRes(it.id, it.name)
-            }
+            }.map { ProjectRes(it.id, it.name) }
 }

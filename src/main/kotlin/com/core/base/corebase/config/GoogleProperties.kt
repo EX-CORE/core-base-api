@@ -6,5 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class GoogleProperties(
     val clientId: String,
     val clientSecret: String,
-    val redirectUrl: String,
+    val redirectUrl: String
 )

@@ -25,4 +25,5 @@ class SwaggerConfig {
                 .description("Core-Base API - Swagger")
                 .version("0.0.1-SNAPSHOT")
         }
+
 }
