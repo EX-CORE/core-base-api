@@ -20,18 +20,18 @@ class SurveyService(
 ) {
     fun get(id: UUID): ReviewSurveyRes =
         reviewRepository.findById(id)
-            .map {
-                it.toRes(reviewSurveyRepository.findByReviewIdAndReviewerId(id, authenticationFacade.uid))
-            }.orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+            ?.toRes(reviewSurveyRepository.findByReviewIdAndReviewerId(id, authenticationFacade.uid))
+            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
     fun save(id: UUID, req: ReviewSurveyReq) =
         reviewRepository.findById(id)
-            .map {
+            ?.let {
                 reviewSurveyRepository.save(ReviewSurvey(id, authenticationFacade.uid, req.projectIds, req.extraReviewer))
-            }.orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+            }
+            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
 
-    private fun Review.toRes(reviewSurvey: Optional<ReviewSurvey>) =
+    private fun Review.toRes(reviewSurvey: ReviewSurvey?) =
         ReviewSurveyRes(
             id,
             title,
@@ -39,8 +39,8 @@ class SurveyService(
             surveyPeriod,
             companyId,
             state,
-            reviewSurvey.map { getProjects(companyId, projectIds) }.orElse(null),
-            reviewSurvey.map { it.extraReviewer }.orElse(null)
+            reviewSurvey?.let { getProjects(companyId, projectIds) },
+            reviewSurvey?.extraReviewer
         )
 
     private fun getProjects(companyId: UUID, ids: List<UUID>) =

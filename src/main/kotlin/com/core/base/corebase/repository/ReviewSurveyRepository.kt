@@ -7,5 +7,5 @@ import java.util.*
 
 @Repository
 interface ReviewSurveyRepository : MongoRepository<ReviewSurvey, Long> {
-    fun findByReviewIdAndReviewerId(reviewId: UUID, reviewerId: UUID): Optional<ReviewSurvey>
+    fun findByReviewIdAndReviewerId(reviewId: UUID, reviewerId: UUID): ReviewSurvey?
 }

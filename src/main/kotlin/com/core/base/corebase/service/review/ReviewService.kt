@@ -1,7 +1,7 @@
 package com.core.base.corebase.service.review
 
-import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.code.ErrorCode
+import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.config.AuthenticationFacade
 import com.core.base.corebase.controller.company.dto.ProjectRes
 import com.core.base.corebase.controller.review.dto.*
@@ -66,18 +66,18 @@ class ReviewService(
 
     fun get(id: UUID): ReviewRes =
         reviewRepository.findById(id)
-            .map { it.toRes() }
-            .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+            ?.toRes()
+            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
     fun getReview(id: UUID, revieweeId: UUID): ReviewDetailRes =
         reviewRepository.findById(id)
-            .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
-            .let {
+            ?.let {
                 val reviewerId = UUID.randomUUID()
                 reviewerRepository.findByReviewIdAndRevieweeIdAndReviewerId(id, revieweeId, reviewerId)
-                    .orElseThrow { throw BaseException(ErrorCode.REVIEWER_NOT_ALLOWED, id) }
+                    ?: throw BaseException(ErrorCode.REVIEWER_NOT_ALLOWED, id)
                 it.toDetailRes(revieweeId)
             }
+            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
 
     fun listReviewByReviewee(id: UUID): List<ReviewerRes> =
@@ -90,29 +90,29 @@ class ReviewService(
             .entries.stream()
             .map { it ->
                 reviewRepository.findById(it.key)
-                    .map { ReviewerRes(id, "", it.title, it.description, it.surveyPeriod, it.reviewPeriod, it.state) }
-                    .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+                    ?.let { ReviewerRes(id, "", it.title, it.description, it.surveyPeriod, it.reviewPeriod, it.state) }
+                    ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
             }
             .toList()
 
     @Transactional
     fun pause(id: UUID) : Unit =
             reviewRepository.findById(id)
-                .map { it.pause() }
-                .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+                ?.let { it.pause() }
+                ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
 
     private fun Reviewer.toRes(): ReviewerRes {
-        val reviewee = userRepository.findByUid(revieweeId).orElseThrow()
+        val reviewee = userRepository.findByUid(revieweeId)!!
         return reviewRepository.findById(reviewId)
-            .map { ReviewerRes(id, reviewee.name, it.title, it.description,  it.surveyPeriod, it.reviewPeriod, it.state) }
-            .orElseThrow { throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id) }
+            ?.let { ReviewerRes(id, reviewee.name, it.title, it.description,  it.surveyPeriod, it.reviewPeriod, it.state) }
+            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
     }
 
 
     private fun Review.toDetailRes(revieweeId: UUID): ReviewDetailRes {
         val reviewee = userRepository.findByUid(revieweeId)
-            .orElseThrow { throw BaseException(ErrorCode.USER_NOT_FOUND, revieweeId) }
+            ?: throw BaseException(ErrorCode.USER_NOT_FOUND, revieweeId)
 
         return ReviewDetailRes(
             id,

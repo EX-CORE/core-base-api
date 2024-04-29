@@ -12,6 +12,6 @@ class ReviewSurveyRes(
     val surveyPeriod: Period,
     val companyId: UUID,
     val state: StateType,
-    val projects : List<ProjectRes>,
-    val extraReviewer : UUID,
+    val projects : List<ProjectRes>?,
+    val extraReviewer : UUID?,
 )

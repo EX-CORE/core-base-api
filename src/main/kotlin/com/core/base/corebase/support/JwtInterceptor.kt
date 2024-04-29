@@ -1,7 +1,7 @@
 package net.huray.backend.minuting.support
 
-import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.code.ErrorCode
+import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.config.AuthenticationFacade
 import com.core.base.corebase.repository.AccountRepository
 import com.core.base.corebase.repository.UserRepository
@@ -27,7 +27,7 @@ class JwtInterceptor(
                 ?.takeIf { jwtProvider.isAccess(it) }
                 ?.let { jwtProvider.getId(it) }
                 ?.let { accountRepository.findByUid(it) }
-                ?.let { userRepository.findByUid(it.uid).orElseThrow() }
+                ?.let { userRepository.findByUid(it.uid)!! }
                 ?.apply { authenticationFacade.setInfo(uid, email, name) }
                 ?: throw BaseException(ErrorCode.INVALID_TOKEN)
         return super.preHandle(request, response, handler)

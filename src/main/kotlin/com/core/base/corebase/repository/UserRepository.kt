@@ -7,6 +7,6 @@ import java.util.*
 
 @Repository
 interface UserRepository : MongoRepository<User, Long> {
-    fun findByUid(uid: UUID): Optional<User>
-    fun findByEmail(email: String): Optional<User>
+    fun findByUid(uid: UUID): User?
+    fun findByEmail(email: String): User?
 }

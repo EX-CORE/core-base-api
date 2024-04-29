@@ -7,6 +7,6 @@ import java.util.*
 
 @Repository
 interface ReviewRepository : MongoRepository<Review, Long> {
-    fun findById(id: UUID): Optional<Review>
+    fun findById(id: UUID): Review?
     fun findByReviewerIdsIn(reviewerId: UUID): List<Review>
 }

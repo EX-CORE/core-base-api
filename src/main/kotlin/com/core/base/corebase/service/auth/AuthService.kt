@@ -4,9 +4,9 @@ import com.core.base.corebase.client.GoogleAuthClient
 import com.core.base.corebase.client.GoogleInfoClient
 import com.core.base.corebase.client.dto.AuthDto
 import com.core.base.corebase.client.dto.GoogleDto
-import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.code.LoginType
+import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.config.GoogleProperties
 import com.core.base.corebase.domain.user.Account
 import com.core.base.corebase.repository.AccountRepository
@@ -52,7 +52,7 @@ class AuthService(
         authResponse.run { googleInfoClient.getInfo("Bearer $accessToken") }
             .let { googleInfoRes ->
                 userRepository.findByEmail(googleInfoRes.email)
-                    .orElseThrow { throw BaseException(ErrorCode.USER_NOT_FOUND) }
+                    ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
             }
             .let { user ->
                 if (user.isWait()){
