@@ -50,7 +50,5 @@ class SurveyService(
                 it.projects.stream()
                     .filter { project -> ids.contains(project.id) }
                     .toList()
-            }.map {
-                ProjectRes(it.id, it.name)
-            }
+            }.map { ProjectRes(it.id, it.name) }
 }

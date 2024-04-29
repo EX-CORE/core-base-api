@@ -7,5 +7,4 @@ class TeamRes(
     val name: String,
     val order: Int,
     var parentsId: UUID? = null
-
 )

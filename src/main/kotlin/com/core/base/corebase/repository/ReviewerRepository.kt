@@ -8,10 +8,8 @@ import java.util.*
 
 @Repository
 interface ReviewerRepository : MongoRepository<Reviewer, Long> {
-
     fun findById(id: UUID): Optional<Reviewer>
     fun findByReviewerId(reviewerId: UUID): List<Reviewer>
     fun findByRevieweeId(revieweeId: UUID): List<Reviewer>
     fun findByReviewIdAndRevieweeIdAndReviewerId( reviewId: UUID, revieweeId: UUID, reviewerId: UUID): Optional<Reviewer>
-
 }

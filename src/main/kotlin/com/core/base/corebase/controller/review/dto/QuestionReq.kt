@@ -9,5 +9,5 @@ class QuestionReq (
     val limit: Int?,
     val order: Int,
     val useScore: Boolean,
-    val useMultiSelect: Boolean,
+    val useMultiSelect: Boolean
 ) 

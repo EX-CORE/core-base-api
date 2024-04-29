@@ -30,11 +30,10 @@ class Review(
         this.state = StateType.PAUSE;
     }
     private fun validPause() : Boolean {
-        if (state.isInActive())
-            return false
-        val now = LocalDate.now()
-        return this.surveyPeriod.isBefore(now)
-                || this.surveyPeriod.between(now)
+        return if (state.isInActive()) false
+        else LocalDate.now().let {
+            this.surveyPeriod.isBefore(it) || this.surveyPeriod.between(it)
+        }
     }
 
 }

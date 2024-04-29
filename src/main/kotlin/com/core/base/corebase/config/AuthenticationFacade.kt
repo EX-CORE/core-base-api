@@ -10,19 +10,21 @@ import java.util.*
 @RequestScope
 class AuthenticationFacade {
 
-    var uid: UUID = UUID.randomUUID()
-        get() = if (flag) field else throw BaseException(ErrorCode.INVALID_TOKEN)
-    var email: String = ""
-        get() = if (flag) field else throw BaseException(ErrorCode.INVALID_TOKEN)
-    var name: String = ""
-        get() = if (flag) field else throw BaseException(ErrorCode.INVALID_TOKEN)
+    private lateinit var _uid: UUID
+    private lateinit var _email: String
+    private lateinit var _name: String
 
     private var flag: Boolean = false
 
+    val uid: UUID by lazy { if (flag) _uid else throw BaseException(ErrorCode.INVALID_TOKEN) }
+    val email: String by lazy { if (flag) _email else throw BaseException(ErrorCode.INVALID_TOKEN) }
+    val name: String by lazy { if (flag) _name else throw BaseException(ErrorCode.INVALID_TOKEN) }
+
     fun setInfo(uid: UUID, email: String, name: String) {
-        this.uid = uid
-        this.email = email
-        this.name = name
+        this._uid = uid
+        this._email = email
+        this._name = name
         this.flag = true
     }
+
 }

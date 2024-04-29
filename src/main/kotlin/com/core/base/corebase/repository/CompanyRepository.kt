@@ -7,5 +7,4 @@ import java.util.*
 
 @Repository
 interface CompanyRepository : MongoRepository<Company, UUID> {
-
 }

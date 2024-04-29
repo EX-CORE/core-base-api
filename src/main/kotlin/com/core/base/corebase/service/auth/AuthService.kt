@@ -48,6 +48,7 @@ class AuthService(
         ).let {
             googleAuthClient.getTokenByCode(it)
         }
+
         authResponse.run { googleInfoClient.getInfo("Bearer $accessToken") }
             .let { googleInfoRes ->
                 val user = userRepository.findByEmail(googleInfoRes.email)
@@ -57,6 +58,7 @@ class AuthService(
             .run { AuthDto.LoginRes(jwtProvider.generateAccessToken(uid), jwtProvider.generateRefreshToken(uid)) }
     }
 
+    @Transactional(readOnly = true)
     fun tokenRefresh(req: AuthDto.TokenRefreshReq): AuthDto.TokenRefreshRes = with(jwtProvider) {
         req.run { getBody(refreshToken) }
             .takeIf { isRefresh(it) }

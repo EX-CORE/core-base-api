@@ -16,6 +16,7 @@ class ReviewController(
     val reviewService: ReviewService,
     val surveyService: SurveyService
 ) {
+
     @PostMapping
     fun save(@RequestBody req: ReviewReq) : Review = reviewService.save(req)
 
@@ -39,6 +40,5 @@ class ReviewController(
 
     @PostMapping("/{id}/surveys")
     fun saveSurvey(@PathVariable id: UUID, @RequestBody req: ReviewSurveyReq) = surveyService.save(id, req)
-
 
 }

@@ -22,7 +22,7 @@ class JwtInterceptor(
         if (!HttpMethod.OPTIONS.matches(request.method))
             request.getHeader("Authorization")
                 ?.takeIf { it.startsWith("Bearer ") }
-                ?.let { it.substring(7) }
+                ?.substring(7)
                 ?.let { jwtProvider.getBody(it) }
                 ?.takeIf { jwtProvider.isAccess(it) }
                 ?.let { jwtProvider.getId(it) }
