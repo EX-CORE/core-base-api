@@ -12,9 +12,9 @@ class User(
     var uid: UUID,
     var name: String,
     var email: String,
-    var companyId: UUID,
+    var companyId: UUID?,
     var state: UserState = UserState.WAIT,
-    var teamId: UUID,
+    var teamId: UUID?,
     var permission: PermissionType
 ){
     fun isWait(): Boolean = state.equals(UserState.WAIT)

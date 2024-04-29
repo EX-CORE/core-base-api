@@ -8,12 +8,17 @@ import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.config.GoogleProperties
+import com.core.base.corebase.controller.user.dto.UserReq
 import com.core.base.corebase.domain.user.Account
+import com.core.base.corebase.domain.user.User
+import com.core.base.corebase.domain.user.code.PermissionType
+import com.core.base.corebase.domain.user.code.UserState
 import com.core.base.corebase.repository.AccountRepository
 import com.core.base.corebase.repository.UserRepository
 import com.core.base.corebase.support.JwtProvider
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class AuthService(
@@ -45,22 +50,29 @@ class AuthService(
             clientSecret,
             "${redirectUrl}/${type.url}",
             "authorization_code"
-        ).let {
-            googleAuthClient.getTokenByCode(it)
-        }
+        ).let { googleAuthClient.getTokenByCode(it) }
+        val infoResponse = authResponse.run { googleInfoClient.getInfo("Bearer $accessToken") }
 
-        authResponse.run { googleInfoClient.getInfo("Bearer $accessToken") }
-            .let { googleInfoRes ->
-                userRepository.findByEmail(googleInfoRes.email)
-                    ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
+        when (type) {
+            LoginType.REVIEWER ->
+                infoResponse
+                    .run { userRepository.findByEmail(email) ?: throw BaseException(ErrorCode.USER_NOT_FOUND) }
+                    .apply { if (isWait()) updateActive() }
+            LoginType.MANAGER ->
+                infoResponse
+                    .run {
+                        userRepository.findByEmail(email)
+                            ?: userRepository.save(User(
+                                UUID.randomUUID(), email, name, null, UserState.ACTIVE, null, PermissionType.MANAGER
+                            ))
+                    }
+        }.run { accountRepository.save(Account(uid, authResponse.refreshToken)) }
+            .run {
+                AuthDto.LoginRes(
+                    jwtProvider.generateAccessToken(uid),
+                    jwtProvider.generateRefreshToken(uid)
+                )
             }
-            .let { user ->
-                if (user.isWait()){
-                    user.updateActive()
-                }
-                accountRepository.save(Account(user.uid, authResponse.refreshToken))
-            }
-            .run { AuthDto.LoginRes(jwtProvider.generateAccessToken(uid), jwtProvider.generateRefreshToken(uid)) }
     }
 
     @Transactional(readOnly = true)

@@ -9,7 +9,7 @@ import java.util.*
 
 @Service
 class UserService(
-    val userRepository: UserRepository,
+    private val userRepository: UserRepository,
 ) {
     fun save(companyId: UUID, req: List<UserReq>): List<User> =
         req.map { req ->
