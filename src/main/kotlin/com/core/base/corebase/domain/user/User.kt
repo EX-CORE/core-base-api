@@ -9,11 +9,18 @@ import java.util.*
 @Document("user")
 class User(
     @Id
-    val uid: UUID,
-    val name: String,
-    val email: String,
-    val companyId: UUID,
-    val state: UserState = UserState.WAIT,
-    val teamId: UUID,
-    val permission: PermissionType
-)
+    var uid: UUID,
+    var name: String,
+    var email: String,
+    var companyId: UUID,
+    var state: UserState = UserState.WAIT,
+    var teamId: UUID,
+    var permission: PermissionType
+){
+    fun isWait(): Boolean = state.equals(UserState.WAIT)
+    fun updateActive() {
+        this.state = UserState.ACTIVE
+    }
+
+
+}
