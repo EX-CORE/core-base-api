@@ -53,7 +53,8 @@ class ReviewService(
             req.reviewerIds,
             req.secretKey,
             req.state,
-            req.projectIds
+            req.projectIds,
+            req.defaultScoreChoices
         )
 
         return reviewRepository.save(review)

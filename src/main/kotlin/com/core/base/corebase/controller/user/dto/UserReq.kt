@@ -6,7 +6,6 @@ import java.util.*
 class UserReq(
     val email: String,
     val name: String,
-    val companyId: UUID,
     val teamId: UUID,
     val permission: PermissionType
 )

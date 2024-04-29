@@ -1,9 +1,6 @@
 package com.core.base.corebase.controller.company.dto
 
-import java.util.*
-
 class CompanyReq(
-    val id: UUID,
     val name: String,
     val ceo: String,
     val telNumber: String,

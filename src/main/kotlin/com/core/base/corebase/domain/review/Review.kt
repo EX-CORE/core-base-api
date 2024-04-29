@@ -21,7 +21,8 @@ class Review(
         val reviewerIds : List<UUID>,
         var secretKey: String?,
         var state: StateType,
-        var projectIds: List<UUID>
+        var projectIds: List<UUID>,
+        var defaultScoreChoices: List<ReviewChoice>
 ) {
 
     fun pause() {
@@ -29,6 +30,7 @@ class Review(
             throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
         this.state = StateType.PAUSE;
     }
+
     private fun validPause() : Boolean {
         return if (state.isInActive()) false
         else LocalDate.now().let {

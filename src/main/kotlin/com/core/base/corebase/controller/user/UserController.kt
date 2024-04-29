@@ -5,6 +5,7 @@ import com.core.base.corebase.domain.user.User
 import com.core.base.corebase.service.user.UserService
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 
 @Tag(name = "유저 API")
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     val userService: UserService
 ) {
-    @PostMapping
-    fun save(@RequestBody userReq: UserReq) : User = userService.save(userReq)
+    @PostMapping("company/{companyId}")
+    fun save(@PathVariable companyId: UUID,
+             @RequestBody userReqList: List<UserReq>) : List<User> = userService.save(companyId, userReqList)
 
 }
