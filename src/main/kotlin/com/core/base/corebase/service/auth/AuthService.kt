@@ -52,27 +52,35 @@ class AuthService(
             "authorization_code"
         ).let { googleAuthClient.getTokenByCode(it) }
         val infoResponse = authResponse.run { googleInfoClient.getInfo("Bearer $accessToken") }
-
-        when (type) {
-            LoginType.REVIEWER ->
-                infoResponse
-                    .run { userRepository.findByEmail(email) ?: throw BaseException(ErrorCode.USER_NOT_FOUND) }
-                    .apply { if (isWait()) updateActive() }
-            LoginType.MANAGER ->
-                infoResponse
-                    .run {
-                        userRepository.findByEmail(email)
-                            ?: userRepository.save(User(
-                                UUID.randomUUID(), email, name, null, UserState.ACTIVE, null, PermissionType.MANAGER
-                            ))
-                    }
-        }.run { accountRepository.save(Account(uid, authResponse.refreshToken)) }
-            .run {
+        userRepository.findByEmail(infoResponse.email)
+            ?.let {
                 AuthDto.LoginRes(
-                    jwtProvider.generateAccessToken(uid),
-                    jwtProvider.generateRefreshToken(uid)
+                    jwtProvider.generateAccessToken(it.uid),
+                    jwtProvider.generateRefreshToken(it.uid)
                 )
-            }
+            } ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
+
+// TODO:: 유저 회사별 대기 여부 관련 API , 기획 필요
+//        when (type) {
+//            LoginType.REVIEWER ->
+//                infoResponse
+//                    .run { userRepository.findByEmail(email) ?: throw BaseException(ErrorCode.USER_NOT_FOUND) }
+//                    .apply { if (isWait()) updateActive() }
+//            LoginType.MANAGER ->
+//                infoResponse
+//                    .run {
+//                        userRepository.findByEmail(email)
+//                            ?: userRepository.save(User(
+//                                UUID.randomUUID(), email, name, null, UserState.ACTIVE, null, PermissionType.MANAGER
+//                            ))
+//                    }
+//        }.run { accountRepository.save(Account(uid, authResponse.refreshToken)) }
+//            .let {
+//                AuthDto.LoginRes(
+//                    jwtProvider.generateAccessToken(uid),
+//                    jwtProvider.generateRefreshToken(uid)
+//                )
+//            }
     }
 
     @Transactional(readOnly = true)

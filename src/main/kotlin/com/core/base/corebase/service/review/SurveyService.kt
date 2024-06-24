@@ -1,54 +1,45 @@
 package com.core.base.corebase.service.review
 
-import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.code.ErrorCode
+import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.config.AuthenticationFacade
-import com.core.base.corebase.controller.company.dto.ProjectRes
-import com.core.base.corebase.controller.review.dto.*
-import com.core.base.corebase.domain.review.*
-import com.core.base.corebase.repository.*
+import com.core.base.corebase.controller.review.dto.ReviewSurveyReq
+import com.core.base.corebase.controller.review.dto.ReviewSurveyRes
+import com.core.base.corebase.domain.review.ReviewBase
+import com.core.base.corebase.domain.review.ReviewPreSurvey
+import com.core.base.corebase.repository.ReviewBaseRepository
+import com.core.base.corebase.repository.ReviewMemberRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class SurveyService(
-    val reviewRepository: ReviewRepository,
-    val userRepository: UserRepository,
-    val companyRepository: CompanyRepository,
-    val reviewSurveyRepository: ReviewSurveyRepository,
+    val reviewBaseRepository: ReviewBaseRepository,
+    val reviewMemberRepository: ReviewMemberRepository,
     val authenticationFacade: AuthenticationFacade
 ) {
     fun get(id: UUID): ReviewSurveyRes =
-        reviewRepository.findById(id)
-            ?.toRes(reviewSurveyRepository.findByReviewIdAndReviewerId(id, authenticationFacade.uid))
+        reviewBaseRepository.findById(id)
+            ?.toRes(reviewMemberRepository.findByReviewIdAndMemberId(id, authenticationFacade.uid)?.preSurvey)
             ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
     fun save(id: UUID, req: ReviewSurveyReq) =
-        reviewRepository.findById(id)
+        reviewMemberRepository.findByReviewIdAndMemberId(id, authenticationFacade.uid)
             ?.let {
-                reviewSurveyRepository.save(ReviewSurvey(id, authenticationFacade.uid, req.projectIds, req.extraReviewer))
+                it.executePreSurvey(ReviewPreSurvey(req.projects, req.extraReviewMember))
             }
             ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
 
-    private fun Review.toRes(reviewSurvey: ReviewSurvey?) =
+    private fun ReviewBase.toRes(reviewPreSurvey: ReviewPreSurvey?) =
         ReviewSurveyRes(
             id,
             title,
             description,
             surveyPeriod,
-            companyId,
+            organizationId,
             state,
-            reviewSurvey?.let { getProjects(companyId, projectIds) },
-            reviewSurvey?.extraReviewer
+            reviewPreSurvey?.projects?: emptyList(),
+            reviewPreSurvey?.extraReviewMember?: null
         )
-
-    private fun getProjects(companyId: UUID, ids: List<UUID>) =
-        companyRepository.findById(companyId)
-            .orElseThrow{ throw BaseException(ErrorCode.COMPANY_NOT_FOUND, companyId) }
-            .let {
-                it.projects.stream()
-                    .filter { project -> ids.contains(project.id) }
-                    .toList()
-            }.map { ProjectRes(it.id, it.name) }
 }

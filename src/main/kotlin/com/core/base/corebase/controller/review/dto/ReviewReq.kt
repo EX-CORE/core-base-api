@@ -12,8 +12,7 @@ class ReviewReq(
     val reviewPeriod: Period,
     val companyId: UUID,
     val sections: List<ReviewerSectionReq>,
-    val reviewerIds: List<UUID>,
-    val state: StateType,
+    val memberIds: List<UUID>,
     val secretKey: String,
     val projectIds: List<UUID>,
     val defaultScoreChoices: List<ReviewChoice>

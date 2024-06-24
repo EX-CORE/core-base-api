@@ -1,41 +1,16 @@
 package com.core.base.corebase.domain.review
 
-import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.common.code.ErrorCode
-import com.core.base.corebase.domain.review.code.StateType
+import com.core.base.corebase.domain.review.code.ReviewState
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 @Document("review")
-class Review(
-        @Id
-        var id: UUID,
-        var title: String,
-        var description: String,
-        var surveyPeriod: Period,
-        var reviewPeriod: Period,
-        var companyId: UUID,
-        val sections: List<ReviewSection>,
-        val reviewerIds : List<UUID>,
-        var secretKey: String?,
-        var state: StateType,
-        var projectIds: List<UUID>,
-        var defaultScoreChoices: List<ReviewChoice>
-) {
-
-    fun pause() {
-        if (!validPause())
-            throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
-        this.state = StateType.PAUSE;
-    }
-
-    private fun validPause() : Boolean {
-        return if (state.isInActive()) false
-        else LocalDate.now().let {
-            this.surveyPeriod.isBefore(it) || this.surveyPeriod.between(it)
-        }
-    }
-
-}
+class Review (
+    @Id
+    val id : UUID,
+    val reviewMemberId : UUID, //ReviewMember
+    val reviewId : UUID, //Review 넣을지 말지 고민됨.
+    val answers : List<ReviewAnswer>?,
+    val state: ReviewState = ReviewState.BEFORE
+)

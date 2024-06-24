@@ -1,9 +1,11 @@
 package com.core.base.corebase.domain.review
 
 import com.core.base.corebase.domain.review.code.QuestionType
+import org.springframework.data.annotation.Id
 import java.util.*
 
 class ReviewQuestion(
+    @Id
     val id : UUID,
     val question: String,
     val type: QuestionType,

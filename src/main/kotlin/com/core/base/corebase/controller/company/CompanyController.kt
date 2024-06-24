@@ -4,7 +4,7 @@ import com.core.base.corebase.controller.company.dto.CompanyReq
 import com.core.base.corebase.controller.company.dto.CompanyRes
 import com.core.base.corebase.controller.company.dto.TeamRes
 import com.core.base.corebase.controller.review.dto.*
-import com.core.base.corebase.service.company.CompanyService
+import com.core.base.corebase.service.company.OrganizationService
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -14,19 +14,19 @@ import java.util.*
 @RestController
 @RequestMapping("/company")
 class CompanyController(
-    val companyService: CompanyService
+    val organizationService: OrganizationService
 ) {
 
     @PostMapping
     fun save(@RequestBody req: CompanyReq): CompanyRes =
-        companyService.save(req)
+        organizationService.save(req)
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: UUID): CompanyRes =
-        companyService.get(id)
+        organizationService.get(id)
 
     @GetMapping("/{id}/teams")
     fun listTeam(@PathVariable id: UUID): List<TeamRes> =
-        companyService.listTeam(id)
+        organizationService.listTeam(id)
 
 }

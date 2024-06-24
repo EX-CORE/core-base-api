@@ -3,27 +3,24 @@ package com.core.base.corebase.service.review
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.config.AuthenticationFacade
-import com.core.base.corebase.controller.company.dto.ProjectRes
 import com.core.base.corebase.controller.review.dto.*
 import com.core.base.corebase.domain.review.*
-import com.core.base.corebase.repository.CompanyRepository
-import com.core.base.corebase.repository.ReviewRepository
-import com.core.base.corebase.repository.ReviewerRepository
-import com.core.base.corebase.repository.UserRepository
+import com.core.base.corebase.domain.review.code.StateType
+import com.core.base.corebase.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
-import java.util.stream.Collectors.groupingBy
 
 @Service
 class ReviewService(
-    val reviewRepository: ReviewRepository,
-    val reviewerRepository: ReviewerRepository,
-    val companyRepository: CompanyRepository,
+    val reviewBaseRepository: ReviewBaseRepository,
+    val memberRepository: MemberRepository,
+    val reviewMemberRepository: ReviewMemberRepository,
+    val organizationRepository: OrganizationRepository,
     val authenticationFacade: AuthenticationFacade,
     val userRepository: UserRepository
 ) {
-    fun save(req: ReviewReq): Review {
+    fun save(req: ReviewReq) {
         val section = req.sections
             .map {
                 ReviewSection(
@@ -42,7 +39,7 @@ class ReviewService(
                 )
             };
 
-        val review = Review(
+        val reviewBase = ReviewBase(
             UUID.randomUUID(),
             req.title,
             req.description,
@@ -50,97 +47,96 @@ class ReviewService(
             req.reviewPeriod,
             req.companyId,
             section,
-            req.reviewerIds,
             req.secretKey,
-            req.state,
-            req.projectIds,
+            StateType.TEMP,
             req.defaultScoreChoices
         )
 
-        return reviewRepository.save(review)
-            .apply {
-                reviewerIds.forEach { uid ->
-                    reviewerRepository.save(Reviewer(UUID.randomUUID(), uid, uid, id))
+        reviewBaseRepository.save(reviewBase)
+            .let {
+                req.memberIds.forEach { memberId ->
+                    memberRepository.findById(memberId)
+                        ?.let { member -> reviewMemberRepository.save(ReviewMember(UUID.randomUUID(), member, it.id, null)) }
+                        ?: throw BaseException(ErrorCode.USER_NOT_FOUND, memberId)
+
                 }
             }
     }
 
     fun get(id: UUID): ReviewRes =
-        reviewRepository.findById(id)
-            ?.toRes()
+        reviewBaseRepository.findById(id)
+            ?.toRes( reviewMemberRepository.findByReviewId(id) )
             ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
-    fun getReview(id: UUID, revieweeId: UUID): ReviewDetailRes =
-        reviewRepository.findById(id)
-            ?.let {
-                val reviewerId = UUID.randomUUID()
-                reviewerRepository.findByReviewIdAndRevieweeIdAndReviewerId(id, revieweeId, reviewerId)
-                    ?: throw BaseException(ErrorCode.REVIEWER_NOT_ALLOWED, id)
-                it.toDetailRes(revieweeId)
-            }
-            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
-
-
-    fun listReviewByReviewee(id: UUID): List<ReviewerRes> =
-        reviewerRepository.findByReviewerId(id).map { it.toRes() }
-
-    fun listReviewByReviewer(id: UUID): List<ReviewerRes> =
-        reviewerRepository.findByRevieweeId(id)
-            .stream()
-            .collect(groupingBy(Reviewer::reviewId))
-            .entries.stream()
-            .map { it ->
-                reviewRepository.findById(it.key)
-                    ?.let { ReviewerRes(id, "", it.title, it.description, it.surveyPeriod, it.reviewPeriod, it.state) }
-                    ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
-            }
-            .toList()
+//    fun getReview(id: UUID, memberId: UUID): ReviewDetailRes =
+//        reviewBaseRepository.findById(id)
+//            ?.let {
+//                val reviewerId = UUID.randomUUID()
+//                reviewMemberRepository.findByReviewIdAndRevieweeIdAndReviewerId(id, revieweeId, reviewerId)
+//                    ?: throw BaseException(ErrorCode.REVIEWER_NOT_ALLOWED, id)
+//                it.toDetailRes(revieweeId)
+//            }
+//            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
+//
+//
+//    fun listReviewByReviewee(id: UUID): List<ReviewerRes> =
+//        reviewMemberRepository.findByReviewerId(id).map { it.toRes() }
+//
+//    fun listReviewByReviewer(id: UUID): List<ReviewerRes> =
+//        reviewMemberRepository.findByRevieweeId(id)
+//            .stream()
+//            .collect(groupingBy(ReviewMember::reviewId))
+//            .entries.stream()
+//            .map { it ->
+//                reviewBaseRepository.findById(it.key)
+//                    ?.let { ReviewerRes(id, "", it.title, it.description, it.surveyPeriod, it.reviewPeriod, it.state) }
+//                    ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
+//            }
+//            .toList()
 
     @Transactional
     fun pause(id: UUID) : Unit =
-            reviewRepository.findById(id)
+            reviewBaseRepository.findById(id)
                 ?.let { it.pause() }
                 ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 
 
-    private fun Reviewer.toRes(): ReviewerRes {
-        val reviewee = userRepository.findByUid(revieweeId)!!
-        return reviewRepository.findById(reviewId)
-            ?.let { ReviewerRes(id, reviewee.name, it.title, it.description,  it.surveyPeriod, it.reviewPeriod, it.state) }
-            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
-    }
-
-
-    private fun Review.toDetailRes(revieweeId: UUID): ReviewDetailRes {
-        val reviewee = userRepository.findByUid(revieweeId)
-            ?: throw BaseException(ErrorCode.USER_NOT_FOUND, revieweeId)
-
-        return ReviewDetailRes(
-            id,
-            title,
-            description,
-            surveyPeriod,
-            reviewPeriod,
-            companyId,
-            sections.map { it.toRes() },
-            state,
-            getProjects(companyId, projectIds),
-            reviewee.name
-        )
-    }
-
-    private fun Review.toRes() =
+//    private fun ReviewMember.toRes(): ReviewerRes {
+//        val reviewee = userRepository.findByUid(revieweeId)!!
+//        return reviewBaseRepository.findById(reviewId)
+//            ?.let { ReviewerRes(id, reviewee.name, it.title, it.description,  it.surveyPeriod, it.reviewPeriod, it.state) }
+//            ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
+//    }
+//
+//
+//    private fun ReviewBase.toDetailRes(revieweeId: UUID): ReviewDetailRes {
+//        val reviewee = userRepository.findByUid(revieweeId)
+//            ?: throw BaseException(ErrorCode.USER_NOT_FOUND, revieweeId)
+//
+//        return ReviewDetailRes(
+//            id,
+//            title,
+//            description,
+//            surveyPeriod,
+//            reviewPeriod,
+//            companyId,
+//            sections.map { it.toRes() },
+//            state,
+//            reviewee.name
+//        )
+//    }
+//
+    private fun ReviewBase.toRes(reviewMembers: List<ReviewMember>) =
         ReviewRes(
             id,
             title,
             description,
             surveyPeriod,
             reviewPeriod,
-            companyId,
+            organizationId,
             sections.map { it.toRes() },
             state,
-            getProjects(companyId, projectIds),
-            reviewerIds,
+            reviewMembers.map { it.toRes() },
         )
 
     private fun ReviewSection.toRes() =
@@ -152,12 +148,6 @@ class ReviewService(
     private fun ReviewChoice.toRes() =
         ChoiceRes(id, label, order, score)
 
-    private fun getProjects(companyId: UUID, ids: List<UUID>) =
-        companyRepository.findById(companyId)
-            .orElseThrow{ throw BaseException(ErrorCode.COMPANY_NOT_FOUND, companyId) }
-            .let {
-                it.projects.stream()
-                    .filter { project -> ids.contains(project.id) }
-                    .toList()
-            }.map { ProjectRes(it.id, it.name) }
+    private fun ReviewMember.toRes() =
+        ReviewMemberRes(member.id, member.name)
 }
