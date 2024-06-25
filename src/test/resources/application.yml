@@ -1,0 +1,25 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://test:test@core-base-cluster.r5c8zyj.mongodb.net/core-base-cluster?retryWrites=true&w=majority
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+
+feign:
+  retry:
+    period: 1000
+    max-period: 10000
+    max-attempts: 5
+
+oauth:
+  google:
+    client-id: test
+    client-secret: test
+    redirect-url: test
+
+auth:
+  jwt:
+    secret-key: test
+    access-exp: 1000
+    refresh-exp: 2000

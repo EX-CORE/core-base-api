@@ -1,19 +1,17 @@
 package com.core.base.corebase.service.company
 
-import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.code.ErrorCode
+import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.controller.company.dto.*
 import com.core.base.corebase.domain.company.Company
 import com.core.base.corebase.domain.company.Project
 import com.core.base.corebase.domain.company.Team
 import com.core.base.corebase.repository.CompanyRepository
-import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Service
 import java.util.*
 
 
 @Service
-@RequiredArgsConstructor
 class CompanyService(
     var companyRepository: CompanyRepository
 ) {

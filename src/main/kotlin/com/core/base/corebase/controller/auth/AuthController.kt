@@ -4,27 +4,27 @@ import com.core.base.corebase.client.dto.AuthDto
 import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.service.auth.AuthService
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.apache.naming.ResourceRef.AUTH
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "로그인 API")
 @Controller
+@RequestMapping("/auth")
 class AuthController(
     private val authService: AuthService
 ) {
 
-    @GetMapping("${AUTH}/code")
+    @GetMapping("/code")
     fun moveUserGoogleCode(@RequestParam("type") type: LoginType): String =
         "redirect:${authService.getUserGoogleCode(type)}"
 
     @ResponseBody
-    @PostMapping("${AUTH}/login")
+    @PostMapping("/login")
     fun login(@RequestParam("code") code: String, @RequestParam("type") type: LoginType): AuthDto.LoginRes =
         authService.login(code, type)
 
     @ResponseBody
-    @PostMapping("${AUTH}/token-refresh")
+    @PostMapping("/token-refresh")
     fun tokenRefresh(@RequestBody req: AuthDto.TokenRefreshReq): AuthDto.TokenRefreshRes =
         authService.tokenRefresh(req)
 
