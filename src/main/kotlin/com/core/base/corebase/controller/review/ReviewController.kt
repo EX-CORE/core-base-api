@@ -1,7 +1,7 @@
 package com.core.base.corebase.controller.review
 
 import com.core.base.corebase.controller.review.dto.*
-import com.core.base.corebase.domain.review.Review
+import com.core.base.corebase.domain.review.ReviewBase
 import com.core.base.corebase.service.review.ReviewService
 import com.core.base.corebase.service.review.SurveyService
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -18,19 +18,19 @@ class ReviewController(
 ) {
 
     @PostMapping
-    fun save(@RequestBody req: ReviewReq) : Review = reviewService.save(req)
+    fun save(@RequestBody req: ReviewReq) = reviewService.save(req)
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: UUID) : ReviewRes = reviewService.get(id)
 
-    @GetMapping("/{id}/reviewee/{uid}")
-    fun getReviewByReviewee(@PathVariable(name = "id") id: UUID, @PathVariable(name = "uid") uid: UUID) : ReviewDetailRes = reviewService.getReview(id, uid)
-
-    @GetMapping("/reviewee/{uid}")
-    fun listReviewByReviewee(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReviewByReviewee(uid)
-
-    @GetMapping("/reviewer/{uid}")
-    fun listReviewByReviewer(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReviewByReviewer(uid)
+//    @GetMapping("/{id}/reviewee/{uid}")
+//    fun getReviewByReviewee(@PathVariable(name = "id") id: UUID, @PathVariable(name = "uid") uid: UUID) : ReviewDetailRes = reviewService.getReview(id, uid)
+//
+//    @GetMapping("/reviewee/{uid}")
+//    fun listReviewByReviewee(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReviewByReviewee(uid)
+//
+//    @GetMapping("/reviewer/{uid}")
+//    fun listReviewByReviewer(@PathVariable uid: UUID) : List<ReviewerRes> = reviewService.listReviewByReviewer(uid)
 
     @PostMapping("/{id}/pause")
     fun pause(@PathVariable id: UUID) = reviewService.pause(id)
@@ -38,7 +38,7 @@ class ReviewController(
     @GetMapping("/{id}/surveys")
     fun getSurvey(@PathVariable id: UUID) : ReviewSurveyRes = surveyService.get(id)
 
-    @PostMapping("/{id}/surveys")
-    fun saveSurvey(@PathVariable id: UUID, @RequestBody req: ReviewSurveyReq) = surveyService.save(id, req)
+//    @PostMapping("/{id}/surveys")
+//    fun saveSurvey(@PathVariable id: UUID, @RequestBody req: ReviewSurveyReq) = surveyService.save(id, req)
 
 }

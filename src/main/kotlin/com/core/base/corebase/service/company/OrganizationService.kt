@@ -3,28 +3,26 @@ package com.core.base.corebase.service.company
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.controller.company.dto.*
-import com.core.base.corebase.domain.company.Company
-import com.core.base.corebase.domain.company.Project
-import com.core.base.corebase.domain.company.Team
-import com.core.base.corebase.repository.CompanyRepository
+import com.core.base.corebase.domain.organization.Organization
+import com.core.base.corebase.domain.organization.Team
+import com.core.base.corebase.repository.OrganizationRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
 
 @Service
-class CompanyService(
-    var companyRepository: CompanyRepository
+class OrganizationService(
+    var organizationRepository: OrganizationRepository
 ) {
 
     fun save(req: CompanyReq): CompanyRes =
-        companyRepository.save(
-            Company(
+        organizationRepository.save(
+            Organization(
                 UUID.randomUUID(),
                 req.name,
                 req.ceo,
                 req.telNumber,
                 req.address,
-                req.projects.map { Project(UUID.randomUUID(), it) },
                 req.teams.map { saveTeam(it, null) }.flatten()
             )
         ).toRes()
@@ -45,19 +43,15 @@ class CompanyService(
     }
 
     private fun getRes(id: UUID) =
-        companyRepository.findById(id)
+        organizationRepository.findById(id)
             .map { it.toRes() }
             .orElseThrow { BaseException(ErrorCode.COMPANY_NOT_FOUND, id) }
 
-    private fun Company.toRes(): CompanyRes =
+    private fun Organization.toRes(): CompanyRes =
         CompanyRes(
             id, name, ceo, telNumber, address,
-            projects.map { it.toRes() },
             teams.map { it.toRes() }
         )
-
-    private fun Project.toRes(): ProjectRes =
-        ProjectRes(id, name)
 
     fun Team.toRes(): TeamRes =
         TeamRes(id, name, order, parentId)

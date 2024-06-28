@@ -8,6 +8,5 @@ class CompanyRes(
     val ceo: String,
     val telNumber: String,
     val address: String,
-    val projects: List<ProjectRes>,
     val teams: List<TeamRes>
 )

@@ -14,7 +14,7 @@ class UserService(
     fun save(companyId: UUID, req: List<UserReq>): List<User> =
         req.map { req ->
             userRepository.save(
-                User(UUID.randomUUID(), req.email, req.name, companyId, UserState.WAIT, req.teamId, req.permission)
+                User(UUID.randomUUID(), req.email, req.name)
             )
         }
 }

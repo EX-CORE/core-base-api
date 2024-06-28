@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
-@Tag(name = "로그인 API")
+@Tag(name = "헬스체크 API")
 @RestController
 class BaseController {
 
