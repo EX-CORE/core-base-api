@@ -42,6 +42,16 @@ class AuthService(
     }
 
 
+    /*
+    * 1. 구글 토큰 확인
+    * 2. 기존 account 있는지 확인
+    * 2.1. 없는 경우, member에 매핑된게 있는지 확인
+    * 2.1.1. 매핑된게 있으면 그 정보로 회원가입 진행
+    * 2.1.2. 매핑된게 없으면 회사만들지, 관리자 문의 alert
+    * 2.2. 있는 경우 기존 계정 정보로 로그인처리
+    *
+    * */
+
     @Transactional
     fun login(code: String, type: LoginType): AuthDto.LoginRes = with(googleProperties) {
         val authResponse = GoogleDto.GoogleTokenReq(

@@ -2,7 +2,6 @@ package com.core.base.corebase.domain.review
 
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.common.code.ErrorCode
-import com.core.base.corebase.domain.company.Organization
 import com.core.base.corebase.domain.review.code.StateType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document

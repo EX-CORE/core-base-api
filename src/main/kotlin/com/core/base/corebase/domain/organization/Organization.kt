@@ -1,4 +1,4 @@
-package com.core.base.corebase.domain.company
+package com.core.base.corebase.domain.organization
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document

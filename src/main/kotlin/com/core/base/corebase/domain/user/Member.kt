@@ -12,7 +12,7 @@ class Member(
     var id: UUID,
     var email: String,
     var name: String,
-    var uid: UUID, //User
+    var uid: UUID?, //User
     var organizationId : UUID, //Organization
     var teamId: UUID?, //Team
     var state: MemberState = MemberState.WAIT,

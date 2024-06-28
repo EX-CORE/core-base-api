@@ -3,8 +3,8 @@ package com.core.base.corebase.service.company
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.controller.company.dto.*
-import com.core.base.corebase.domain.company.Organization
-import com.core.base.corebase.domain.company.Team
+import com.core.base.corebase.domain.organization.Organization
+import com.core.base.corebase.domain.organization.Team
 import com.core.base.corebase.repository.OrganizationRepository
 import org.springframework.stereotype.Service
 import java.util.*
