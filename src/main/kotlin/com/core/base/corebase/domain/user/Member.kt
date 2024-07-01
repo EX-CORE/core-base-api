@@ -19,7 +19,8 @@ class Member(
     var permission: PermissionType
 ) {
     fun isWait(): Boolean = state.equals(MemberState.WAIT)
-    fun updateJoin() {
+    fun updateJoin(uid: UUID) {
+        this.uid = uid
         this.state = MemberState.JOIN
     }
 }
