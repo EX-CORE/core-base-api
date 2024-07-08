@@ -20,7 +20,7 @@ class OrganizationService(
             Organization(
                 UUID.randomUUID(),
                 req.name,
-                req.logo?.name,
+                req.logo?.originalFilename,
                 req.ceo,
                 req.telNumber,
                 req.address,

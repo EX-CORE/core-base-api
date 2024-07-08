@@ -4,7 +4,9 @@ import com.core.base.corebase.controller.organization.dto.OrganizationReq
 import com.core.base.corebase.controller.organization.dto.OrganizationRes
 import com.core.base.corebase.controller.organization.dto.TeamRes
 import com.core.base.corebase.service.organization.OrganizationService
+import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -16,7 +18,7 @@ class OrganizationController(
     val organizationService: OrganizationService
 ) {
 
-    @PostMapping(consumes = ["multipart/form-data"])
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun save(@RequestBody req: OrganizationReq): OrganizationRes =
         organizationService.save(req)
 
