@@ -20,10 +20,11 @@ class OrganizationService(
             Organization(
                 UUID.randomUUID(),
                 req.name,
+                req.logo?.name,
                 req.ceo,
                 req.telNumber,
                 req.address,
-                req.teams.map { saveTeam(it, null) }.flatten()
+                req.teams?.map { saveTeam(it, null) }?.flatten()
             )
         ).toRes()
 
@@ -31,14 +32,14 @@ class OrganizationService(
         getRes(id)
 
     fun listTeam(id: UUID): List<TeamRes> =
-        getRes(id).teams
+        getRes(id).teams.orEmpty()
 
     private fun saveTeam(teamReq: TeamReq, parentsId: UUID?): List<Team> {
-        val teamList : MutableList<Team> = mutableListOf()
+        val teamList: MutableList<Team> = mutableListOf()
         val team = Team(UUID.randomUUID(), teamReq.name, teamReq.order, parentsId)
         teamList.add(team)
         if (!teamReq.subTeams.isNullOrEmpty())
-            teamList.addAll( teamReq.subTeams.map { saveTeam(it, team.id) }.flatten())
+            teamList.addAll(teamReq.subTeams.map { saveTeam(it, team.id) }.flatten())
         return teamList
     }
 
@@ -49,8 +50,8 @@ class OrganizationService(
 
     private fun Organization.toRes(): OrganizationRes =
         OrganizationRes(
-            id, name, ceo, telNumber, address,
-            teams.map { it.toRes() }
+            id, name, logoFileName, ceo, telNumber, address,
+            teams?.map { it.toRes() }
         )
 
     fun Team.toRes(): TeamRes =

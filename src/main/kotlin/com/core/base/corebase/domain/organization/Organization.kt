@@ -9,8 +9,9 @@ class Organization(
     @Id
     val id: UUID,
     val name: String,
-    val ceo: String,
-    val telNumber: String,
-    val address: String,
-    val teams: List<Team>
+    val logoFileName: String?,
+    val ceo: String?,
+    val telNumber: String?,
+    val address: String?,
+    val teams: List<Team>?
 )

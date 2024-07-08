@@ -16,7 +16,7 @@ class OrganizationController(
     val organizationService: OrganizationService
 ) {
 
-    @PostMapping
+    @PostMapping(consumes = ["multipart/form-data"])
     fun save(@RequestBody req: OrganizationReq): OrganizationRes =
         organizationService.save(req)
 

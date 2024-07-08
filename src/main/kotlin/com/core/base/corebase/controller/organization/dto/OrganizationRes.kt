@@ -5,8 +5,9 @@ import java.util.*
 class OrganizationRes(
     val id: UUID,
     val name: String,
-    val ceo: String,
-    val telNumber: String,
-    val address: String,
-    val teams: List<TeamRes>
+    val logoFileName: String?,
+    val ceo: String?,
+    val telNumber: String?,
+    val address: String?,
+    val teams: List<TeamRes>?
 )
