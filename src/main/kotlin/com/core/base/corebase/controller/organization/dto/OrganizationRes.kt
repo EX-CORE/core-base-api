@@ -1,8 +1,8 @@
-package com.core.base.corebase.controller.company.dto
+package com.core.base.corebase.controller.organization.dto
 
 import java.util.*
 
-class CompanyRes(
+class OrganizationRes(
     val id: UUID,
     val name: String,
     val ceo: String,

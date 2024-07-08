@@ -1,6 +1,6 @@
-package com.core.base.corebase.controller.company.dto
+package com.core.base.corebase.controller.organization.dto
 
-class CompanyReq(
+class OrganizationReq(
     val name: String,
     val ceo: String,
     val telNumber: String,

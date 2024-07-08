@@ -1,8 +1,8 @@
-package com.core.base.corebase.service.company
+package com.core.base.corebase.service.organization
 
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.controller.company.dto.*
+import com.core.base.corebase.controller.organization.dto.*
 import com.core.base.corebase.domain.organization.Organization
 import com.core.base.corebase.domain.organization.Team
 import com.core.base.corebase.repository.OrganizationRepository
@@ -15,7 +15,7 @@ class OrganizationService(
     var organizationRepository: OrganizationRepository
 ) {
 
-    fun save(req: CompanyReq): CompanyRes =
+    fun save(req: OrganizationReq): OrganizationRes =
         organizationRepository.save(
             Organization(
                 UUID.randomUUID(),
@@ -27,7 +27,7 @@ class OrganizationService(
             )
         ).toRes()
 
-    fun get(id: UUID): CompanyRes =
+    fun get(id: UUID): OrganizationRes =
         getRes(id)
 
     fun listTeam(id: UUID): List<TeamRes> =
@@ -45,10 +45,10 @@ class OrganizationService(
     private fun getRes(id: UUID) =
         organizationRepository.findById(id)
             .map { it.toRes() }
-            .orElseThrow { BaseException(ErrorCode.COMPANY_NOT_FOUND, id) }
+            .orElseThrow { BaseException(ErrorCode.ORGANIZATION_NOT_FOUND, id) }
 
-    private fun Organization.toRes(): CompanyRes =
-        CompanyRes(
+    private fun Organization.toRes(): OrganizationRes =
+        OrganizationRes(
             id, name, ceo, telNumber, address,
             teams.map { it.toRes() }
         )
