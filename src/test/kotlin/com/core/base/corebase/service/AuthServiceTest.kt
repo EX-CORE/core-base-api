@@ -2,14 +2,20 @@ package com.core.base.corebase.service
 
 import com.core.base.corebase.client.GoogleAuthClient
 import com.core.base.corebase.client.GoogleInfoClient
+import com.core.base.corebase.client.dto.GoogleDto
 import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.config.GoogleProperties
+import com.core.base.corebase.domain.user.User
+import com.core.base.corebase.repository.AccountRepository
+import com.core.base.corebase.repository.MemberRepository
+import com.core.base.corebase.repository.UserRepository
 import com.core.base.corebase.service.auth.AuthService
 import com.core.base.corebase.support.JwtProvider
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import java.util.*
 
 class AuthServiceTest: BehaviorSpec({
 
@@ -17,12 +23,18 @@ class AuthServiceTest: BehaviorSpec({
     val googleInfoClient: GoogleInfoClient = mockk()
     val jwtProvider: JwtProvider = mockk()
     val googleProperties: GoogleProperties = mockk()
+    val accountRepository: AccountRepository = mockk()
+    val userRepository: UserRepository = mockk()
+    val memberRepository: MemberRepository = mockk()
 
     val sut = AuthService(
         googleAuthClient,
         googleInfoClient,
         jwtProvider,
-        googleProperties
+        googleProperties,
+        accountRepository,
+        userRepository,
+        memberRepository
     )
 
     Given("Google oauth info setting complete") {
@@ -30,13 +42,14 @@ class AuthServiceTest: BehaviorSpec({
         val clientSecret = "fake-client-secret"
         val redirectUrl = "http://www.fake.com"
         val loginType = LoginType.REVIEWER
+        val code = "code";
 
         every { googleProperties.clientId } returns clientId
         every { googleProperties.clientSecret } returns clientSecret
         every { googleProperties.redirectUrl } returns redirectUrl
 
         When("Request getUserGoogleCode()") {
-            val userGoogleCodeRedirectUrl = sut.getUserGoogleCodeRedirectUrl(loginType)
+            val userGoogleCodeRedirectUrl = sut.getUserGoogleCode(loginType)
 
             Then("Return correct url") {
                 userGoogleCodeRedirectUrl.shouldBe(
@@ -48,6 +61,54 @@ class AuthServiceTest: BehaviorSpec({
                                 "&redirect_uri=${redirectUrl}/${loginType.url}" +
                                 "&prompt=consent"
                 )
+            }
+        }
+
+    }
+
+
+    Given("User Login Success") {
+        val clientId = "fake-client-id"
+        val clientSecret = "fake-client-secret"
+        val redirectUrl = "http://www.fake.com"
+        val loginType = LoginType.REVIEWER
+        val code = "code"
+        val uid = UUID.randomUUID()
+
+        val user = User(uid, "name", "email")
+
+        every { googleProperties.clientId } returns clientId
+        every { googleProperties.clientSecret } returns clientSecret
+        every { googleProperties.redirectUrl } returns redirectUrl
+
+        every { googleAuthClient.getTokenByCode(any()) } returns GoogleDto.GoogleTokenRes("accessToken", "expiresIn","tokenType", "scope", "refreshToken")
+        every { googleInfoClient.getInfo(any()) } returns GoogleDto.GoogleInfoRes("sub", "name", "given", "family", "picture", "test@test.com",
+            "verified", "korean")
+
+        every { jwtProvider.generateAccessToken(uid) } returns "accessToken"
+        every { jwtProvider.generateRefreshToken(uid) } returns "refreshToken"
+
+        When("Request login(code, loginType) - sign in") {
+            every { userRepository.findByEmail(eq("test@test.com")) } returns User(uid, "name", "test@test.com")
+
+            val loginResult = sut.login(code, loginType)
+
+            Then("Return Sign in") {
+                loginResult.accessToken.shouldBe("accessToken")
+                loginResult.refreshToken.shouldBe("refreshToken")
+            }
+        }
+
+        When("Request login(code, loginType) - sign up") {
+            every { userRepository.findByEmail(eq("test@test.com")) } returns null
+            every { userRepository.save(any()) } returns user
+
+
+            val loginResult = sut.login(code, loginType)
+
+            Then("Return Sign up") {
+                loginResult.accessToken.shouldBe("accessToken")
+                loginResult.refreshToken.shouldBe("refreshToken")
             }
         }
     }

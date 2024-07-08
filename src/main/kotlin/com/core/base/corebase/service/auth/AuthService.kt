@@ -72,13 +72,7 @@ class AuthService(
                 googleInfoClient.getInfo("Bearer ${accessTokenResponse.accessToken}")
 
             val user = userRepository.findByEmail(googleInfoResponse.email)
-                ?: memberRepository.findTopByEmailAndAndState(googleInfoResponse.email, MemberState.WAIT)
-                    ?.let {
-                        val newUser = userRepository.save(User(UUID.randomUUID(), it.name, it.email))
-                        it.updateJoin(newUser.uid)
-                        newUser
-                    }
-                ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
+                ?: userRepository.save(User(UUID.randomUUID(), googleInfoResponse.name, googleInfoResponse.email))
 
             return AuthDto.LoginRes(
                 jwtProvider.generateAccessToken(user.uid),
