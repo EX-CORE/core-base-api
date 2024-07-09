@@ -10,7 +10,7 @@ class ReviewReq(
     val description: String,
     val surveyPeriod: Period,
     val reviewPeriod: Period,
-    val companyId: UUID,
+    val organizationId: UUID,
     val sections: List<ReviewerSectionReq>,
     val memberIds: List<UUID>,
     val secretKey: String,

@@ -10,7 +10,7 @@ open class ReviewSimpleRes(
     val description: String,
     val surveyPeriod: Period,
     val reviewPeriod: Period,
-    val companyId: UUID,
+    val organizationId: UUID,
     val sections: List<ReviewerSectionRes>,
     val state: StateType
 )

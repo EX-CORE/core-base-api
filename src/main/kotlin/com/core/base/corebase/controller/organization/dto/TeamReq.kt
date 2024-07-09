@@ -1,4 +1,4 @@
-package com.core.base.corebase.controller.company.dto
+package com.core.base.corebase.controller.organization.dto
 
 class TeamReq(
     val name: String,
