@@ -10,8 +10,8 @@ class ReviewDetailRes(
     description: String,
     surveyPeriod: Period,
     reviewPeriod: Period,
-    companyId: UUID,
+    organizationId: UUID,
     sections: List<ReviewerSectionRes>,
     state: StateType,
     val revieweeName: String,
-) : ReviewSimpleRes(id, title, description, surveyPeriod, reviewPeriod, companyId, sections, state)
+) : ReviewSimpleRes(id, title, description, surveyPeriod, reviewPeriod, organizationId, sections, state)

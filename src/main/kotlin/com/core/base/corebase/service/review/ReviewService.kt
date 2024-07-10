@@ -45,7 +45,7 @@ class ReviewService(
             req.description,
             req.surveyPeriod,
             req.reviewPeriod,
-            req.companyId,
+            req.organizationId,
             section,
             req.secretKey,
             StateType.TEMP,
@@ -119,7 +119,7 @@ class ReviewService(
 //            description,
 //            surveyPeriod,
 //            reviewPeriod,
-//            companyId,
+//            organizationId,
 //            sections.map { it.toRes() },
 //            state,
 //            reviewee.name

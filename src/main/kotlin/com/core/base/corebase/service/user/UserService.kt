@@ -12,7 +12,7 @@ import java.util.*
 class UserService(
     private val userRepository: UserRepository,
 ) {
-    fun save(companyId: UUID, req: List<UserReq>): List<User> =
+    fun save(organizationId: UUID, req: List<UserReq>): List<User> =
         req.map { req ->
             userRepository.save(
                 User(UUID.randomUUID(), req.email, req.name)
