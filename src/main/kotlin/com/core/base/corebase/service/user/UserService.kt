@@ -1,5 +1,7 @@
 package com.core.base.corebase.service.user
 
+import com.core.base.corebase.common.code.ErrorCode
+import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.controller.user.dto.UserReq
 import com.core.base.corebase.domain.user.User
 import com.core.base.corebase.repository.UserRepository
@@ -16,4 +18,10 @@ class UserService(
                 User(UUID.randomUUID(), req.email, req.name)
             )
         }
+
+    fun get(userId: UUID): User? =
+        userRepository.findByUid(userId) // findById(기본?), findByUid(커스텀?)
+//            ?.toRes (  userRepository.findByUid(userId).uid )
+            ?: throw BaseException(ErrorCode.USER_NOT_FOUND, userId)
+
 }
