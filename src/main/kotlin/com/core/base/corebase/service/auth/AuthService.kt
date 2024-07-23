@@ -62,7 +62,7 @@ class AuthService(
             code,
             clientId,
             clientSecret,
-            "${redirectUrl}/${type.url}",
+            "${redirectUrl}",
             "authorization_code"
         ).let {
             val accessTokenResponse =
