@@ -20,9 +20,9 @@ class UserController(
     fun get(@PathVariable id: UUID) =
         userService.get(id)
 
-    @PostMapping("company/{companyId}")
-    fun save(@PathVariable companyId: UUID,
-             @RequestBody userReqList: List<UserReq>) : List<User> = userService.save(companyId, userReqList)
+//    @PostMapping("company/{companyId}")
+//    fun save(@PathVariable companyId: UUID,
+//             @RequestBody userReqList: List<UserReq>) : List<User> = userService.save(companyId, userReqList)
 
     @PostMapping("organization/{organizationId}")
     fun save(@PathVariable organizationId: UUID,
