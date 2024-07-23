@@ -24,6 +24,10 @@ repositories {
 	mavenCentral()
 }
 
+tasks.compileJava {
+	options.compilerArgs.add("--add-modules=java.xml.bind")
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -33,6 +37,9 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	// Add these dependencies
+	implementation ("javax.xml.bind:jaxb-api:2.3.1")
+	implementation ("org.glassfish.jaxb:jaxb-runtime:2.3.1")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
