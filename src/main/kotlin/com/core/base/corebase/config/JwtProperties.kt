@@ -11,7 +11,7 @@ class JwtProperties(secretKey: String, accessExp: Long, refreshExp: Long) {
 
     init {
         this.secretKey = Base64.getEncoder().encodeToString(secretKey.toByteArray())
-        this.accessExp = accessExp
-        this.refreshExp = refreshExp
+        this.accessExp = accessExp * 1000
+        this.refreshExp = refreshExp * 1000
     }
 }

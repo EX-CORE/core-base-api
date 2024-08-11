@@ -7,9 +7,8 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface MemberRepository : MongoRepository<Member, Long> {
+interface MemberRepository : MongoRepository<Member, UUID> {
     fun findTopByEmailAndAndState(email: String, state: MemberState): Member?
-    fun findById(id: UUID): Member?
     fun findByUid(uid: UUID): List<Member>
     fun findByUidAndOrganizationId(uid: UUID, organizationId: UUID): Member?
 }

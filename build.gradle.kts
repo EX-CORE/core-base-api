@@ -48,6 +48,8 @@ dependencies {
 	testImplementation("io.kotest:kotest-assertions-core:5.9.1")
 	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
 	testImplementation("com.ninja-squad:springmockk:4.0.2")
+
+	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.6.2")
 }
 
 tasks.withType<KotlinCompile> {

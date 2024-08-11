@@ -1,9 +1,11 @@
 package com.core.base.corebase.service.user
 
-import com.core.base.corebase.common.code.ErrorCode
-import com.core.base.corebase.common.exception.BaseException
+import com.core.base.corebase.controller.user.dto.UserOrganizationRes
 import com.core.base.corebase.controller.user.dto.UserReq
+import com.core.base.corebase.domain.user.Member
 import com.core.base.corebase.domain.user.User
+import com.core.base.corebase.repository.MemberRepository
+import com.core.base.corebase.repository.OrganizationRepository
 import com.core.base.corebase.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -11,6 +13,8 @@ import java.util.*
 @Service
 class UserService(
     private val userRepository: UserRepository,
+    private val memberRepository: MemberRepository,
+    private val organizationRepository: OrganizationRepository,
 ) {
     fun save(organizationId: UUID, req: List<UserReq>): List<User> =
         req.map { req ->
@@ -19,9 +23,16 @@ class UserService(
             )
         }
 
-    fun get(userId: UUID): User? =
-        userRepository.findByUid(userId) // findById(기본?), findByUid(커스텀?)
-//            ?.toRes (  userRepository.findByUid(userId).uid )
-            ?: throw BaseException(ErrorCode.USER_NOT_FOUND, userId)
+    fun getUserOrganization(uid: UUID): UserOrganizationRes =
+        memberRepository.findByUid(uid)
+            .run { UserOrganizationRes(
+                filter { !it.isWait() }.toUserOrganizationList(),
+                filter { it.isWait() }.toUserOrganizationList()
+            ) }
+
+    private fun List<Member>.toUserOrganizationList() =
+        this.map { it.organizationId }
+            .let { organizationRepository.findAllById(it) }
+            .map { UserOrganizationRes.UserOrganization(it.id, it.logoFileName, it.name) }
 
 }

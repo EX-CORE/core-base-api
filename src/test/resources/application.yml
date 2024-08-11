@@ -1,10 +1,9 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://test:test@core-base-cluster.r5c8zyj.mongodb.net/core-base-cluster?retryWrites=true&w=majority
-  jackson:
-    property-naming-strategy: SNAKE_CASE
-    default-property-inclusion: non_null
+      host: localhost
+      port: 0
+      database: local
 
 feign:
   retry:
@@ -23,3 +22,9 @@ auth:
     secret-key: test
     access-exp: 1000
     refresh-exp: 2000
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 5.0.5

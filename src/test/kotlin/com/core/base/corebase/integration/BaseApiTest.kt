@@ -1,18 +1,14 @@
 package com.core.base.corebase.integration
 
-import io.kotest.core.spec.style.BehaviorSpec
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
+import com.core.base.corebase.base.IntegrationTestSpec
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@SpringBootTest
-@AutoConfigureMockMvc
 class BaseApiTest(
 	val mockMvc: MockMvc
-): BehaviorSpec({
+): IntegrationTestSpec({
 
 	Given("Server running") {
 		When("Request /health-check") {
