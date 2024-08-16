@@ -14,7 +14,6 @@ import org.springframework.web.servlet.HandlerInterceptor
 class JwtInterceptor(
     private val authenticationFacade: AuthenticationFacade,
     private val jwtProvider: JwtProvider,
-    private val accountRepository: AccountRepository,
     private val userRepository: UserRepository
 ) : HandlerInterceptor {
 
@@ -26,8 +25,7 @@ class JwtInterceptor(
                 ?.let { jwtProvider.getBody(it) }
                 ?.takeIf { jwtProvider.isAccess(it) }
                 ?.let { jwtProvider.getId(it) }
-                ?.let { accountRepository.findByIdOrNull(it) }
-                ?.run { userRepository.findByUid(uid) }
+                ?.let { userRepository.findByUid(it) }
                 ?.apply { authenticationFacade.setInfo(uid, email, name) }
                 ?: throw BaseException(ErrorCode.INVALID_TOKEN)
         return super.preHandle(request, response, handler)
