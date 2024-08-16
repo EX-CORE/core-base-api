@@ -1,6 +1,5 @@
 package com.core.base.corebase.config
 
-import com.core.base.corebase.repository.AccountRepository
 import com.core.base.corebase.repository.UserRepository
 import com.core.base.corebase.support.JwtInterceptor
 import com.core.base.corebase.support.JwtProvider
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebConfig(
     private val authenticationFacade: AuthenticationFacade,
     private val jwtProvider: JwtProvider,
-    private val accountRepository: AccountRepository,
     private val userRepository: UserRepository
 ) : WebMvcConfigurer {
 
@@ -26,7 +24,7 @@ class WebConfig(
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(
-            JwtInterceptor(authenticationFacade, jwtProvider, accountRepository, userRepository)
+            JwtInterceptor(authenticationFacade, jwtProvider, userRepository)
         ).addPathPatterns("/**")
             .excludePathPatterns(
                 "/health-check", "/auth/**", "/error", "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**"
