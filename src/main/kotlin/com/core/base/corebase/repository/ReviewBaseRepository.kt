@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface ReviewBaseRepository : MongoRepository<ReviewBase, Long> {
-    fun findById(id: UUID): ReviewBase?
+interface ReviewBaseRepository : MongoRepository<ReviewBase, UUID> {
 }

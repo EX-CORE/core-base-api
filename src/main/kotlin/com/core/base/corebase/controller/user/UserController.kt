@@ -1,7 +1,8 @@
 package com.core.base.corebase.controller.user
 
+import com.core.base.corebase.config.AuthenticationFacade
+import com.core.base.corebase.controller.user.dto.UserOrganizationRes
 import com.core.base.corebase.controller.user.dto.UserReq
-import com.core.base.corebase.controller.user.dto.UserRes
 import com.core.base.corebase.domain.user.User
 import com.core.base.corebase.service.user.UserService
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -13,20 +14,15 @@ import java.util.*
 @RestController
 @RequestMapping("/users")
 class UserController(
-    val userService: UserService
+    private val userService: UserService,
+    private val authenticationFacade: AuthenticationFacade
 ) {
-
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: UUID) =
-        userService.get(id)
-
-//    @PostMapping("company/{companyId}")
-//    fun save(@PathVariable companyId: UUID,
-//             @RequestBody userReqList: List<UserReq>) : List<User> = userService.save(companyId, userReqList)
 
     @PostMapping("organization/{organizationId}")
     fun save(@PathVariable organizationId: UUID,
              @RequestBody userReqList: List<UserReq>) : List<User> = userService.save(organizationId, userReqList)
 
+    @GetMapping("/organizations")
+    fun getUserOrganization(): UserOrganizationRes = userService.getUserOrganization(authenticationFacade.uid)
 
 }

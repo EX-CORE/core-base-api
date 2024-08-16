@@ -8,15 +8,11 @@ import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.config.GoogleProperties
-import com.core.base.corebase.controller.user.dto.UserReq
 import com.core.base.corebase.domain.user.Account
 import com.core.base.corebase.domain.user.User
-import com.core.base.corebase.domain.user.code.MemberState
-import com.core.base.corebase.domain.user.code.PermissionType
 import com.core.base.corebase.domain.user.code.UserState
 import com.core.base.corebase.repository.AccountRepository
 import com.core.base.corebase.repository.MemberRepository
-import com.core.base.corebase.repository.ReviewMemberRepository
 import com.core.base.corebase.repository.UserRepository
 import com.core.base.corebase.support.JwtProvider
 import org.springframework.stereotype.Service
@@ -45,17 +41,6 @@ class AuthService(
                 "&prompt=consent"
     }
 
-
-    /*
-    * 1. 구글 토큰 확인
-    * 2. 기존 account 있는지 확인
-    * 2.1. 없는 경우, member에 매핑된게 있는지 확인
-    * 2.1.1. 매핑된게 있으면 그 정보로 회원가입 진행
-    * 2.1.2. 매핑된게 없으면 에러
-    * 2.2. 있는 경우 기존 계정 정보로 로그인처리
-    *
-    * */
-
     @Transactional
     fun login(code: String, type: LoginType): AuthDto.LoginRes = with(googleProperties) {
         GoogleDto.GoogleTokenReq(
@@ -65,44 +50,17 @@ class AuthService(
             "${redirectUrl}",
             "authorization_code"
         ).let {
-            val accessTokenResponse =
-                googleAuthClient.getTokenByCode(it)
-
-            val googleInfoResponse =
-                googleInfoClient.getInfo("Bearer ${accessTokenResponse.accessToken}")
-
+            val accessTokenResponse = googleAuthClient.getTokenByCode(it)
+            val googleInfoResponse = googleInfoClient.getInfo("Bearer ${accessTokenResponse.accessToken}")
             val user = userRepository.findByEmail(googleInfoResponse.email)
                 ?: userRepository.save(User(UUID.randomUUID(), googleInfoResponse.name, googleInfoResponse.email))
+                    .also { accountRepository.save(Account(it.uid, accessTokenResponse.refreshToken, UserState.ACTIVE)) }
 
             return AuthDto.LoginRes(
                 jwtProvider.generateAccessToken(user.uid),
                 jwtProvider.generateRefreshToken(user.uid)
             )
         }
-
-
-
-// TODO:: 유저 회사별 대기 여부 관련 API , 기획 필요
-//        when (type) {
-//            LoginType.REVIEWER ->
-//                infoResponse
-//                    .run { userRepository.findByEmail(email) ?: throw BaseException(ErrorCode.USER_NOT_FOUND) }
-//                    .apply { if (isWait()) updateActive() }
-//            LoginType.MANAGER ->
-//                infoResponse
-//                    .run {
-//                        userRepository.findByEmail(email)
-//                            ?: userRepository.save(User(
-//                                UUID.randomUUID(), email, name, null, UserState.ACTIVE, null, PermissionType.MANAGER
-//                            ))
-//                    }
-//        }.run { accountRepository.save(Account(uid, authResponse.refreshToken)) }
-//            .let {
-//                AuthDto.LoginRes(
-//                    jwtProvider.generateAccessToken(uid),
-//                    jwtProvider.generateRefreshToken(uid)
-//                )
-//            }
     }
 
     @Transactional(readOnly = true)
@@ -110,7 +68,7 @@ class AuthService(
         req.run { getBody(refreshToken) }
             .takeIf { isRefresh(it) }
             ?.let { getId(it) }
-            ?.takeIf { accountRepository.existsById(it) }
+            ?.takeIf { accountRepository.existsByUid(it) }
             ?.let { AuthDto.TokenRefreshRes(jwtProvider.generateAccessToken(it)) }
             ?: throw BaseException(ErrorCode.INVALID_TOKEN)
     }

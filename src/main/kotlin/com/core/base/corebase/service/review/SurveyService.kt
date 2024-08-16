@@ -9,17 +9,18 @@ import com.core.base.corebase.domain.review.ReviewBase
 import com.core.base.corebase.domain.review.ReviewPreSurvey
 import com.core.base.corebase.repository.ReviewBaseRepository
 import com.core.base.corebase.repository.ReviewMemberRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class SurveyService(
-    val reviewBaseRepository: ReviewBaseRepository,
-    val reviewMemberRepository: ReviewMemberRepository,
-    val authenticationFacade: AuthenticationFacade
+    private val reviewBaseRepository: ReviewBaseRepository,
+    private val reviewMemberRepository: ReviewMemberRepository,
+    private val authenticationFacade: AuthenticationFacade
 ) {
     fun get(id: UUID): ReviewSurveyRes =
-        reviewBaseRepository.findById(id)
+        reviewBaseRepository.findByIdOrNull(id)
             ?.toRes(reviewMemberRepository.findByReviewIdAndMemberId(id, authenticationFacade.uid)?.preSurvey)
             ?: throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
 

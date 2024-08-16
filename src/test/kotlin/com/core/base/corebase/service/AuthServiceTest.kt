@@ -5,7 +5,9 @@ import com.core.base.corebase.client.GoogleInfoClient
 import com.core.base.corebase.client.dto.GoogleDto
 import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.config.GoogleProperties
+import com.core.base.corebase.domain.user.Account
 import com.core.base.corebase.domain.user.User
+import com.core.base.corebase.domain.user.code.UserState
 import com.core.base.corebase.repository.AccountRepository
 import com.core.base.corebase.repository.MemberRepository
 import com.core.base.corebase.repository.UserRepository
@@ -88,27 +90,31 @@ class AuthServiceTest: BehaviorSpec({
         every { jwtProvider.generateAccessToken(uid) } returns "accessToken"
         every { jwtProvider.generateRefreshToken(uid) } returns "refreshToken"
 
-        When("Request login(code, loginType) - sign in") {
-            every { userRepository.findByEmail(eq("test@test.com")) } returns User(uid, "name", "test@test.com")
+        And("User exists") {
+            every { userRepository.findByEmail(eq("test@test.com")) } returns user
 
-            val loginResult = sut.login(code, loginType)
+            When("Request login(code, loginType) - sign in") {
+                val loginResult = sut.login(code, loginType)
 
-            Then("Return Sign in") {
-                loginResult.accessToken.shouldBe("accessToken")
-                loginResult.refreshToken.shouldBe("refreshToken")
+                Then("Return Sign in") {
+                    loginResult.accessToken.shouldBe("accessToken")
+                    loginResult.refreshToken.shouldBe("refreshToken")
+                }
             }
         }
 
-        When("Request login(code, loginType) - sign up") {
+        And("User exists") {
             every { userRepository.findByEmail(eq("test@test.com")) } returns null
             every { userRepository.save(any()) } returns user
+            every { accountRepository.save(any()) } returns Account(uid, "refreshToken", UserState.ACTIVE)
 
+            When("Request login(code, loginType) - sign up") {
+                val loginResult = sut.login(code, loginType)
 
-            val loginResult = sut.login(code, loginType)
-
-            Then("Return Sign up") {
-                loginResult.accessToken.shouldBe("accessToken")
-                loginResult.refreshToken.shouldBe("refreshToken")
+                Then("Return Sign up") {
+                    loginResult.accessToken.shouldBe("accessToken")
+                    loginResult.refreshToken.shouldBe("refreshToken")
+                }
             }
         }
     }

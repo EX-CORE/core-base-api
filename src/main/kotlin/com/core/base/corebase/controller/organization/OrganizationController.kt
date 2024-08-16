@@ -15,7 +15,7 @@ import java.util.*
 @RestController
 @RequestMapping("/organization")
 class OrganizationController(
-    val organizationService: OrganizationService
+    private val organizationService: OrganizationService
 ) {
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])

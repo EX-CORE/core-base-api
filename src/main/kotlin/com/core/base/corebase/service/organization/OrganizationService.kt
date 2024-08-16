@@ -2,7 +2,10 @@ package com.core.base.corebase.service.organization
 
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.controller.organization.dto.*
+import com.core.base.corebase.controller.organization.dto.OrganizationReq
+import com.core.base.corebase.controller.organization.dto.OrganizationRes
+import com.core.base.corebase.controller.organization.dto.TeamReq
+import com.core.base.corebase.controller.organization.dto.TeamRes
 import com.core.base.corebase.domain.organization.Organization
 import com.core.base.corebase.domain.organization.Team
 import com.core.base.corebase.repository.OrganizationRepository
@@ -12,7 +15,7 @@ import java.util.*
 
 @Service
 class OrganizationService(
-    var organizationRepository: OrganizationRepository
+    private var organizationRepository: OrganizationRepository
 ) {
 
     fun save(req: OrganizationReq): OrganizationRes =

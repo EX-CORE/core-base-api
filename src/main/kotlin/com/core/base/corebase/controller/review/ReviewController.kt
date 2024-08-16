@@ -1,7 +1,8 @@
 package com.core.base.corebase.controller.review
 
-import com.core.base.corebase.controller.review.dto.*
-import com.core.base.corebase.domain.review.ReviewBase
+import com.core.base.corebase.controller.review.dto.ReviewReq
+import com.core.base.corebase.controller.review.dto.ReviewRes
+import com.core.base.corebase.controller.review.dto.ReviewSurveyRes
 import com.core.base.corebase.service.review.ReviewService
 import com.core.base.corebase.service.review.SurveyService
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -13,8 +14,8 @@ import java.util.*
 @RestController
 @RequestMapping("/reviews")
 class ReviewController(
-    val reviewService: ReviewService,
-    val surveyService: SurveyService
+    private val reviewService: ReviewService,
+    private val surveyService: SurveyService
 ) {
 
     @PostMapping
