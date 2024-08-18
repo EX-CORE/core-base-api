@@ -11,8 +11,10 @@ class BaseApiTest(
 ): IntegrationTestSpec({
 
 	Given("Server running") {
+
 		When("Request /health-check") {
 			val res = mockMvc.perform(get("/health-check")).andDo(print())
+
 			Then("Request 200 status") {
 				res.andExpect(status().isOk())
 			}
