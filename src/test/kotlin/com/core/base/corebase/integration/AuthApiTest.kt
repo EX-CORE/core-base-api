@@ -6,7 +6,6 @@ import com.core.base.corebase.client.GoogleAuthClient
 import com.core.base.corebase.client.GoogleInfoClient
 import com.core.base.corebase.client.dto.AuthDto
 import com.core.base.corebase.client.dto.GoogleDto
-import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.config.GoogleProperties
 import com.core.base.corebase.repository.AccountRepository
 import com.core.base.corebase.repository.UserRepository
@@ -39,15 +38,14 @@ class AuthApiTest(
         val clientId = "fake-client-id"
         val clientSecret = "fake-client-secret"
         val redirectUrl = "http://www.fake.com"
-        val loginType = LoginType.REVIEWER
 
         every { googleProperties.clientId } returns clientId
         every { googleProperties.clientSecret } returns clientSecret
         every { googleProperties.redirectUrl } returns redirectUrl
 
         When("Request move user google code api") {
-            val res = mockMvc.perform(get("/auth/code")
-                .param("type", loginType.name)).andDo(print())
+            val res = mockMvc.perform(get("/auth/code"))
+                .andDo(print())
 
             Then("Return 302 status") {
                 res.andExpect(status().`is`(302))
@@ -61,7 +59,7 @@ class AuthApiTest(
                                 "&scope=https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile" +
                                 "&response_type=code&access_type=offline" +
                                 "&state=state_parameter_passthrough_value&include_granted_scopes=true" +
-                                "&redirect_uri=${redirectUrl}/${loginType.url}" +
+                                "&redirect_uri=${redirectUrl}" +
                                 "&prompt=consent"
                     )
                 )
@@ -74,7 +72,6 @@ class AuthApiTest(
         val clientId = "fake-client-id"
         val clientSecret = "fake-client-secret"
         val redirectUrl = "http://www.fake.com"
-        val loginType = LoginType.REVIEWER
         val googleAccessToken = "fake-google-access-token"
         val email = "email@email.com"
 
@@ -98,9 +95,10 @@ class AuthApiTest(
         And("User not exists") {
 
             When("Request login api") {
-                val res = mockMvc.perform(post("/auth/login")
-                    .param("code", authCode)
-                    .param("type", loginType.name)).andDo(print())
+                val res = mockMvc.perform(
+                    post("/auth/login")
+                        .param("code", authCode)
+                ).andDo(print())
 
                 Then("Return 200") {
                     res.andExpect(status().isOk)
@@ -122,9 +120,10 @@ class AuthApiTest(
             val user = userDataSetup.addUser()
 
             When("Request login api") {
-                val res = mockMvc.perform(post("/auth/login")
-                    .param("code", authCode)
-                    .param("type", loginType.name)).andDo(print())
+                val res = mockMvc.perform(
+                    post("/auth/login")
+                        .param("code", authCode)
+                    ).andDo(print())
 
                 Then("Return 200") {
                     res.andExpect(status().isOk)

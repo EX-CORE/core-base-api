@@ -1,7 +1,6 @@
 package com.core.base.corebase.controller.auth
 
 import com.core.base.corebase.client.dto.AuthDto
-import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.service.auth.AuthService
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.stereotype.Controller
@@ -15,13 +14,13 @@ class AuthController(
 ) {
 
     @GetMapping("/code")
-    fun moveUserGoogleCode(@RequestParam("type") type: LoginType): String =
-        "redirect:${authService.getUserGoogleCode(type)}"
+    fun moveUserGoogleCode(): String =
+        "redirect:${authService.getUserGoogleCode()}"
 
     @ResponseBody
     @PostMapping("/login")
-    fun login(@RequestParam("code") code: String, @RequestParam("type") type: LoginType): AuthDto.LoginRes =
-        authService.login(code, type)
+    fun login(@RequestParam("code") code: String): AuthDto.LoginRes =
+        authService.login(code)
 
     @ResponseBody
     @PostMapping("/token-refresh")

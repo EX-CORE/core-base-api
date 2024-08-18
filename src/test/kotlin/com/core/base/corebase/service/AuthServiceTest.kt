@@ -3,7 +3,6 @@ package com.core.base.corebase.service
 import com.core.base.corebase.client.GoogleAuthClient
 import com.core.base.corebase.client.GoogleInfoClient
 import com.core.base.corebase.client.dto.GoogleDto
-import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.config.GoogleProperties
 import com.core.base.corebase.domain.user.Account
 import com.core.base.corebase.domain.user.User
@@ -43,15 +42,13 @@ class AuthServiceTest: BehaviorSpec({
         val clientId = "fake-client-id"
         val clientSecret = "fake-client-secret"
         val redirectUrl = "http://www.fake.com"
-        val loginType = LoginType.REVIEWER
-        val code = "code";
 
         every { googleProperties.clientId } returns clientId
         every { googleProperties.clientSecret } returns clientSecret
         every { googleProperties.redirectUrl } returns redirectUrl
 
         When("Request getUserGoogleCode()") {
-            val userGoogleCodeRedirectUrl = sut.getUserGoogleCode(loginType)
+            val userGoogleCodeRedirectUrl = sut.getUserGoogleCode()
 
             Then("Return correct url") {
                 userGoogleCodeRedirectUrl.shouldBe(
@@ -60,7 +57,7 @@ class AuthServiceTest: BehaviorSpec({
                                 "&scope=https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile" +
                                 "&response_type=code&access_type=offline" +
                                 "&state=state_parameter_passthrough_value&include_granted_scopes=true" +
-                                "&redirect_uri=${redirectUrl}/${loginType.url}" +
+                                "&redirect_uri=${redirectUrl}" +
                                 "&prompt=consent"
                 )
             }
@@ -73,7 +70,6 @@ class AuthServiceTest: BehaviorSpec({
         val clientId = "fake-client-id"
         val clientSecret = "fake-client-secret"
         val redirectUrl = "http://www.fake.com"
-        val loginType = LoginType.REVIEWER
         val code = "code"
         val uid = UUID.randomUUID()
 
@@ -94,7 +90,7 @@ class AuthServiceTest: BehaviorSpec({
             every { userRepository.findByEmail(eq("test@test.com")) } returns user
 
             When("Request login(code, loginType) - sign in") {
-                val loginResult = sut.login(code, loginType)
+                val loginResult = sut.login(code)
 
                 Then("Return Sign in") {
                     loginResult.accessToken.shouldBe("accessToken")
@@ -109,7 +105,7 @@ class AuthServiceTest: BehaviorSpec({
             every { accountRepository.save(any()) } returns Account(uid, "refreshToken", UserState.ACTIVE)
 
             When("Request login(code, loginType) - sign up") {
-                val loginResult = sut.login(code, loginType)
+                val loginResult = sut.login(code)
 
                 Then("Return Sign up") {
                     loginResult.accessToken.shouldBe("accessToken")

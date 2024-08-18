@@ -31,18 +31,18 @@ class AuthService(
 ) {
 
 
-    fun getUserGoogleCode(type: LoginType): String = with(googleProperties) {
+    fun getUserGoogleCode(): String = with(googleProperties) {
         "https://accounts.google.com/o/oauth2/v2/auth" +
                 "?client_id=${clientId}" +
                 "&scope=https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile" +
                 "&response_type=code&access_type=offline" +
                 "&state=state_parameter_passthrough_value&include_granted_scopes=true" +
-                "&redirect_uri=${redirectUrl}/${type.url}" +
+                "&redirect_uri=${redirectUrl}" +
                 "&prompt=consent"
     }
 
     @Transactional
-    fun login(code: String, type: LoginType): AuthDto.LoginRes = with(googleProperties) {
+    fun login(code: String): AuthDto.LoginRes = with(googleProperties) {
         GoogleDto.GoogleTokenReq(
             code,
             clientId,
