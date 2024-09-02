@@ -2,10 +2,7 @@ package com.core.base.corebase.service.organization
 
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.exception.BaseException
-import com.core.base.corebase.controller.organization.dto.OrganizationReq
-import com.core.base.corebase.controller.organization.dto.OrganizationRes
-import com.core.base.corebase.controller.organization.dto.TeamReq
-import com.core.base.corebase.controller.organization.dto.TeamRes
+import com.core.base.corebase.controller.organization.dto.*
 import com.core.base.corebase.domain.organization.Organization
 import com.core.base.corebase.domain.organization.Team
 import com.core.base.corebase.repository.OrganizationRepository
@@ -27,9 +24,20 @@ class OrganizationService(
                 req.ceo,
                 req.telNumber,
                 req.address,
-                req.teams?.map { saveTeam(it, null) }?.flatten()
+                null
             )
         ).toRes()
+
+    fun update(id: UUID, req: OrganizationReq): OrganizationRes =
+        getEntity(id).apply {
+            name = req.name
+            logoFileName = req.logo?.originalFilename
+            ceo = req.ceo
+            telNumber = req.telNumber
+            address = req.address
+        }.let {
+            organizationRepository.save(it)
+        }.toRes()
 
     fun get(id: UUID): OrganizationRes =
         getRes(id)
@@ -37,19 +45,38 @@ class OrganizationService(
     fun listTeam(id: UUID): List<TeamRes> =
         getRes(id).teams.orEmpty()
 
-    private fun saveTeam(teamReq: TeamReq, parentsId: UUID?): List<Team> {
-        val teamList: MutableList<Team> = mutableListOf()
-        val team = Team(UUID.randomUUID(), teamReq.name, teamReq.order, parentsId)
-        teamList.add(team)
-        if (!teamReq.subTeams.isNullOrEmpty())
-            teamList.addAll(teamReq.subTeams.map { saveTeam(it, team.id) }.flatten())
-        return teamList
+
+    fun updateTeam(id: UUID, teams: List<TeamUpdateReq>) {
+        val organization = getEntity(id)
+        teams.map {
+            organization.updateTeamById(it.id, it.name, it.order, it.parentsId)
+        }
+        organizationRepository.save(organization)
     }
 
-    private fun getRes(id: UUID) =
+    fun deleteTeam(id: UUID, teamId: UUID) =
+        getEntity(id)
+            .let {
+                it.removeTeamById(teamId)
+                organizationRepository.save(it)
+            }
+
+    fun saveTeam(id: UUID, req: TeamReq): TeamRes {
+        val organization = getEntity(id)
+        val team = Team(UUID.randomUUID(), req.name, req.order, req.parentsId)
+        organization.addTeam(team)
+        organizationRepository.save(organization)
+        return team.toRes()
+    }
+
+
+    private fun getEntity(id: UUID) =
         organizationRepository.findById(id)
-            .map { it.toRes() }
             .orElseThrow { BaseException(ErrorCode.ORGANIZATION_NOT_FOUND, id) }
+
+    private fun getRes(id: UUID) =
+        getEntity(id)
+            .toRes()
 
     private fun Organization.toRes(): OrganizationRes =
         OrganizationRes(
@@ -59,4 +86,6 @@ class OrganizationService(
 
     fun Team.toRes(): TeamRes =
         TeamRes(id, name, order, parentId)
+
+
 }
