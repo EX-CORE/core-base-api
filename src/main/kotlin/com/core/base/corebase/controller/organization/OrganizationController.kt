@@ -2,7 +2,6 @@ package com.core.base.corebase.controller.organization
 
 import com.core.base.corebase.controller.organization.dto.*
 import com.core.base.corebase.service.organization.OrganizationService
-import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
