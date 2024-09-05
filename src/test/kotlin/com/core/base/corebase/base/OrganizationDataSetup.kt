@@ -18,7 +18,7 @@ class OrganizationDataSetup(
 ) {
 
     fun addOrganization(name: String = "활빈당") =
-        organizationRepository.save(Organization(UUID.randomUUID(), name, "logo.png", "ceo", "telNumber", "address", emptyList()))
+        organizationRepository.save(Organization(UUID.randomUUID(), name, "logo.png", "ceo", "telNumber", "address", mutableListOf()))
 
     fun addMember(user: User = userDataSetup.addUser(), organization: Organization = addOrganization(),
                   state: MemberState = MemberState.JOIN, permissionType: PermissionType = PermissionType.REVIEWER) =
