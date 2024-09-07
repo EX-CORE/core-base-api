@@ -6,6 +6,6 @@ class Team(
     var name: String,
     var order: Int,
     var parentId: UUID? = null,
-    var id: UUID = UUID.randomUUID()
+    val id: UUID = UUID.randomUUID()
 //    var leaderUId: UUID? = null,
 )
