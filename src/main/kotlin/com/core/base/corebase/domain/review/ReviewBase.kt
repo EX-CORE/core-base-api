@@ -10,17 +10,16 @@ import java.util.*
 
 @Document("review_base")
 class ReviewBase(
-        @Id
-        var id: UUID,
-        var title: String,
-        var description: String,
-        var surveyPeriod: Period,
-        var reviewPeriod: Period,
-        var organizationId: UUID, //Organization
-        val sections: List<ReviewSection>,
-        var secretKey: String?,
-        var state: StateType,
-        var defaultScoreChoices: List<ReviewChoice>
+    var title: String,
+    var description: String,
+    var surveyPeriod: Period,
+    var reviewPeriod: Period,
+    var organizationId: UUID, //Organization
+    val sections: List<ReviewSection>,
+    var secretKey: String?,
+    var state: StateType,
+    var defaultScoreChoices: List<ReviewChoice>,
+    @Id val id: UUID = UUID.randomUUID()
 ) {
 
     fun pause() {

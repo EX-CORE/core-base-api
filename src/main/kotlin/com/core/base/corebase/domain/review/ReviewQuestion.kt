@@ -5,8 +5,6 @@ import org.springframework.data.annotation.Id
 import java.util.*
 
 class ReviewQuestion(
-    @Id
-    val id : UUID,
     val question: String,
     val type: QuestionType,
     val limit: Int?,
@@ -14,4 +12,5 @@ class ReviewQuestion(
     val choices: List<ReviewChoice>?,
     val useScore: Boolean,
     val useMultiSelect: Boolean,
+    @Id val id : UUID = UUID.randomUUID()
 )

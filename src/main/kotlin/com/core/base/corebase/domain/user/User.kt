@@ -6,8 +6,7 @@ import java.util.*
 
 @Document("user")
 class User(
-    @Id
-    var uid: UUID,
     var name: String,
-    var email: String
+    var email: String,
+    @Id val uid: UUID = UUID.randomUUID()
 )

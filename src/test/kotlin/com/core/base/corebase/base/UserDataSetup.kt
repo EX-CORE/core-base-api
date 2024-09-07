@@ -7,7 +7,6 @@ import com.core.base.corebase.repository.AccountRepository
 import com.core.base.corebase.repository.UserRepository
 import com.core.base.corebase.support.JwtProvider
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class UserDataSetup(
@@ -17,8 +16,8 @@ class UserDataSetup(
 ) {
 
     fun addUser(name: String = "홍길동", email: String = "email@email.com") =
-        userRepository.save(User(UUID.randomUUID(), name, email))
-            .also { accountRepository.save(Account(it.uid, "refreshToken", UserState.ACTIVE)) }
+        userRepository.save(User(name, email))
+            .also { accountRepository.save(Account("refreshToken", UserState.ACTIVE, it.uid)) }
 
     fun getAccessToken(user: User = addUser()) = jwtProvider.generateAccessToken(user.uid)
 

@@ -21,22 +21,14 @@ class UserService(
                     .let { organizationRepository.findAllById(it).associateBy { it.id } }
 
                 UserOrganizationRes(
-                    filter { !it.isWait() }.let {
-                        this.map {
-                            val org = info.get(it.organizationId)
-                            ParticipationUserOrganization(it.organizationId, org?.logoFileName, org?.name, it.permission)
-                        }
-                    },
-                    filter { it.isWait() }.let {
-                        this.map {
-                            val org = info.get(it.organizationId)
-                            InvitedUserOrganization(
-                                it.organizationId,
-                                org?.logoFileName,
-                                org?.name
-                            )
-                        }
-                    }
+                    filter { !it.isWait() }.run { map {
+                        val org = info.get(it.organizationId)
+                        ParticipationUserOrganization(it.organizationId, org?.logoFileName, org?.name, it.permission)
+                    } },
+                    filter { it.isWait() }.run { map {
+                        val org = info.get(it.organizationId)
+                        InvitedUserOrganization(it.organizationId, org?.logoFileName, org?.name)
+                    } }
                 )
             }
 
