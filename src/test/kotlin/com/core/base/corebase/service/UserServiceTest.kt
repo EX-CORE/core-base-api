@@ -6,7 +6,6 @@ import com.core.base.corebase.domain.user.code.MemberState
 import com.core.base.corebase.domain.user.code.PermissionType
 import com.core.base.corebase.repository.MemberRepository
 import com.core.base.corebase.repository.OrganizationRepository
-import com.core.base.corebase.repository.UserRepository
 import com.core.base.corebase.service.user.UserService
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -16,11 +15,10 @@ import java.util.*
 
 class UserServiceTest: BehaviorSpec({
 
-    val userRepository = mockk<UserRepository>()
     val memberRepository = mockk<MemberRepository>()
     val organizationRepository = mockk<OrganizationRepository>()
 
-    val sut = UserService(userRepository, memberRepository, organizationRepository)
+    val sut = UserService(memberRepository, organizationRepository)
 
     Given("User's organization exists") {
         val uid = UUID.randomUUID()
