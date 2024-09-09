@@ -73,7 +73,7 @@ class AuthServiceTest: BehaviorSpec({
         val code = "code"
         val uid = UUID.randomUUID()
 
-        val user = User(uid, "name", "email")
+        val user = User("name", "email", uid)
 
         every { googleProperties.clientId } returns clientId
         every { googleProperties.clientSecret } returns clientSecret
@@ -102,7 +102,7 @@ class AuthServiceTest: BehaviorSpec({
         And("User exists") {
             every { userRepository.findByEmail(eq("test@test.com")) } returns null
             every { userRepository.save(any()) } returns user
-            every { accountRepository.save(any()) } returns Account(uid, "refreshToken", UserState.ACTIVE)
+            every { accountRepository.save(any()) } returns Account("refreshToken", UserState.ACTIVE, uid)
 
             When("Request login(code, loginType) - sign up") {
                 val loginResult = sut.login(code)

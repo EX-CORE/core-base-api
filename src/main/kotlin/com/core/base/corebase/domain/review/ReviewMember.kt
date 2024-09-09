@@ -7,11 +7,10 @@ import java.util.*
 
 @Document("review_member")
 class ReviewMember(
-    @Id
-    val id: UUID,
     val member: Member, //Member
     val reviewId: UUID, // Review
-    var preSurvey: ReviewPreSurvey?
+    var preSurvey: ReviewPreSurvey?,
+    @Id val id: UUID = UUID.randomUUID()
 ){
     fun executePreSurvey( preSurvey: ReviewPreSurvey) {
         this.preSurvey = preSurvey

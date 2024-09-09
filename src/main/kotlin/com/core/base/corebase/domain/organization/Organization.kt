@@ -8,14 +8,13 @@ import java.util.*
 
 @Document("organization")
 class Organization(
-    @Id
-    val id: UUID,
     var name: String,
     var logoFileName: String?,
     var ceo: String?,
     var telNumber: String?,
     var address: String?,
-    val teams: MutableList<Team>? = mutableListOf()
+    val teams: MutableList<Team>? = mutableListOf(),
+    @Id val id: UUID = UUID.randomUUID()
 ) {
     fun addTeam(team: Team) {
         if (teams == null) {
@@ -42,7 +41,7 @@ class Organization(
         }
         val index = teams.indexOfFirst { it.id == teamId }
         if (index != -1) {
-            teams[index] = Team(teamId, name, order, parentId)
+            teams[index] = Team(name, order, parentId, teamId)
         }
     }
 }

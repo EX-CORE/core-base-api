@@ -8,15 +8,14 @@ import java.util.*
 
 @Document("member")
 class Member(
-    @Id
-    var id: UUID,
     var email: String,
     var name: String,
     var uid: UUID?, //User
     var organizationId : UUID, //Organization
     var teamId: UUID?, //Team
     var state: MemberState = MemberState.WAIT,
-    var permission: PermissionType
+    var permission: PermissionType,
+    @Id val id: UUID = UUID.randomUUID()
 ) {
     fun isWait(): Boolean = state.equals(MemberState.WAIT)
     fun updateJoin(uid: UUID) {

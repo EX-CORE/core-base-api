@@ -28,10 +28,9 @@ class ReviewService(
                     it.name,
                     it.questions.map { q ->
                         ReviewQuestion(
-                            UUID.randomUUID(),
                             q.question, q.type,
                             q.limit, q.order,
-                            q.choices.map { c -> ReviewChoice(UUID.randomUUID(), c.label, c.order, c.score) },
+                            q.choices.map { c -> ReviewChoice(c.label, c.order, c.score) },
                             q.useScore,
                             q.useMultiSelect
                         )
@@ -41,7 +40,6 @@ class ReviewService(
             };
 
         val reviewBase = ReviewBase(
-            UUID.randomUUID(),
             req.title,
             req.description,
             req.surveyPeriod,
@@ -57,7 +55,7 @@ class ReviewService(
             .let {
                 req.memberIds.forEach { memberId ->
                     memberRepository.findByIdOrNull(memberId)
-                        ?.let { member -> reviewMemberRepository.save(ReviewMember(UUID.randomUUID(), member, it.id, null)) }
+                        ?.let { member -> reviewMemberRepository.save(ReviewMember(member, it.id, null)) }
                         ?: throw BaseException(ErrorCode.USER_NOT_FOUND, memberId)
 
                 }

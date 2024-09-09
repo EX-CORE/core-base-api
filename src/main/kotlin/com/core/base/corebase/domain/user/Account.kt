@@ -7,8 +7,7 @@ import java.util.*
 
 @Document("accounts")
 class Account(
-    @Id
-    var uid: UUID, //User
     var refreshToken: String,
-    var state: UserState
+    var state: UserState,
+    @Id val uid: UUID = UUID.randomUUID()
 )

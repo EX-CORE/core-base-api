@@ -18,13 +18,11 @@ class OrganizationService(
     fun save(req: OrganizationReq): OrganizationRes =
         organizationRepository.save(
             Organization(
-                UUID.randomUUID(),
                 req.name,
                 req.logo?.originalFilename,
                 req.ceo,
                 req.telNumber,
-                req.address,
-                null
+                req.address
             )
         ).toRes()
 
@@ -63,7 +61,7 @@ class OrganizationService(
 
     fun saveTeam(id: UUID, req: TeamReq): TeamRes {
         val organization = getEntity(id)
-        val team = Team(UUID.randomUUID(), req.name, req.order, req.parentsId)
+        val team = Team(req.name, req.order, req.parentsId)
         organization.addTeam(team)
         organizationRepository.save(organization)
         return team.toRes()
