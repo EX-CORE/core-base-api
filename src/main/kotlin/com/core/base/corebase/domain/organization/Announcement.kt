@@ -13,4 +13,8 @@ class Announcement(
     val createdAt: LocalDate = LocalDate.now(),
     @Id val id: UUID = UUID.randomUUID()
 ) {
+    fun update(title: String, content: String) {
+        this.title = title
+        this.content = content
+    }
 }

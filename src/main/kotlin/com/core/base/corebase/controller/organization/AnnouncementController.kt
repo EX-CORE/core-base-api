@@ -23,4 +23,9 @@ class AnnouncementController(
         announcementService.save(announcementReq, authenticationFacade.uid, organizationId)
     }
 
+    @PutMapping("/{announcementId}")
+    fun update(@RequestBody announcementReq: AnnouncementReq, @RequestParam organizationId: UUID, @PathVariable announcementId: UUID) {
+        announcementService.update(announcementReq, authenticationFacade.uid, organizationId, announcementId)
+    }
+
 }
