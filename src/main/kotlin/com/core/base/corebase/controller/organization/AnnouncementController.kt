@@ -28,4 +28,9 @@ class AnnouncementController(
         announcementService.update(announcementReq, authenticationFacade.uid, organizationId, announcementId)
     }
 
+    @DeleteMapping("/{announcementId}")
+    fun delete(@RequestParam organizationId: UUID, @PathVariable announcementId: UUID) {
+        announcementService.delete(authenticationFacade.uid, organizationId, announcementId)
+    }
+
 }

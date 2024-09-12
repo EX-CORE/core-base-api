@@ -22,7 +22,6 @@ class AnnouncementService(
     @Transactional
     fun getList(uid: UUID, organizationId: UUID): List<AnnouncementRes> {
         memberRepository.findByUidAndOrganizationId(uid, organizationId) ?: throw BaseException(ErrorCode.INVALID_TOKEN)
-
         return organizationId
             .let { announcementRepository.findByOrganizationIdOrderByCreatedAtDesc(it) }
             .map { it.toRes() }
@@ -32,23 +31,29 @@ class AnnouncementService(
 
     @Transactional
     fun save(announcementReq: AnnouncementReq, uid: UUID, organizationId: UUID) {
-        memberRepository.findByUidAndOrganizationId(uid, organizationId)
-            ?.takeIf { it.permission.equals(PermissionType.MANAGER) }
-            ?: throw BaseException(ErrorCode.INVALID_TOKEN)
-
+        checkAuthorization(uid, organizationId)
         announcementRepository.save(Announcement(organizationId, announcementReq.title, announcementReq.content));
     }
 
     @Transactional
     fun update(announcementReq: AnnouncementReq, uid: UUID, organizationId: UUID, announcementId: UUID) {
-        memberRepository.findByUidAndOrganizationId(uid, organizationId)
-            ?.takeIf { it.permission.equals(PermissionType.MANAGER) }
-            ?: throw BaseException(ErrorCode.INVALID_TOKEN)
-
+        checkAuthorization(uid, organizationId)
         announcementRepository.findByIdOrNull(announcementId)
             ?.takeIf { it.organizationId.equals(organizationId) }
             ?.update(announcementReq.title, announcementReq.content)
             ?: throw BaseException(ErrorCode.ANNOUNCEMENT_NOT_FOUND, announcementId)
+    }
+
+    @Transactional
+    fun delete(uid: UUID, organizationId: UUID, announcementId: UUID) {
+        checkAuthorization(uid, organizationId)
+        announcementRepository.deleteById(announcementId)
+    }
+
+    private fun checkAuthorization(uid: UUID, organizationId: UUID, ) {
+        memberRepository.findByUidAndOrganizationId(uid, organizationId)
+            ?.takeIf { it.permission.equals(PermissionType.MANAGER) }
+            ?: throw BaseException(ErrorCode.INVALID_TOKEN)
     }
 
 }
