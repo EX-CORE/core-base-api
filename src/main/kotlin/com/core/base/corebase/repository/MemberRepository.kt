@@ -8,5 +8,5 @@ import java.util.*
 interface MemberRepository : MongoRepository<Member, UUID> {
     fun findTopByEmailAndAndState(email: String, state: MemberState): Member?
     fun findByUid(uid: UUID): List<Member>
-    fun findByUidAndOrganizationId(uid: UUID, organizationId: UUID): Member?
+    fun findByUidAndOrganizationIdAndState(uid: UUID, organizationId: UUID, state: MemberState): Member?
 }

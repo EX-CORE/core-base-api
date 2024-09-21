@@ -5,6 +5,7 @@ import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.controller.organization.dto.AnnouncementReq
 import com.core.base.corebase.controller.organization.dto.AnnouncementRes
 import com.core.base.corebase.domain.organization.Announcement
+import com.core.base.corebase.domain.user.code.MemberState
 import com.core.base.corebase.domain.user.code.PermissionType
 import com.core.base.corebase.repository.AnnouncementRepository
 import com.core.base.corebase.repository.MemberRepository
@@ -21,7 +22,7 @@ class AnnouncementService(
 
     @Transactional
     fun getList(uid: UUID, organizationId: UUID): List<AnnouncementRes> {
-        memberRepository.findByUidAndOrganizationId(uid, organizationId) ?: throw BaseException(ErrorCode.INVALID_TOKEN)
+        memberRepository.findByUidAndOrganizationIdAndState(uid, organizationId, MemberState.JOIN) ?: throw BaseException(ErrorCode.INVALID_TOKEN)
         return organizationId
             .let { announcementRepository.findByOrganizationIdOrderByCreatedAtDesc(it) }
             .map { it.toRes() }
@@ -52,7 +53,7 @@ class AnnouncementService(
     }
 
     private fun checkAuthorization(uid: UUID, organizationId: UUID, ) {
-        memberRepository.findByUidAndOrganizationId(uid, organizationId)
+        memberRepository.findByUidAndOrganizationIdAndState(uid, organizationId, MemberState.JOIN)
             ?.takeIf { it.permission.equals(PermissionType.MANAGER) }
             ?: throw BaseException(ErrorCode.INVALID_TOKEN)
     }
