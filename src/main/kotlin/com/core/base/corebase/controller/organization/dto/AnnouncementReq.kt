@@ -5,6 +5,5 @@ import java.time.LocalDate
 class AnnouncementReq(
     val title: String,
     val content: String,
-    val createdAt: LocalDate
 ) {
 }

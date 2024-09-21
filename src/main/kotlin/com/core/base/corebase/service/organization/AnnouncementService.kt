@@ -40,7 +40,8 @@ class AnnouncementService(
         checkAuthorization(uid, organizationId)
         announcementRepository.findByIdOrNull(announcementId)
             ?.takeIf { it.organizationId.equals(organizationId) }
-            ?.update(announcementReq.title, announcementReq.content)
+            ?.apply { update(announcementReq.title, announcementReq.content) }
+            ?.also { announcementRepository.save(it) }
             ?: throw BaseException(ErrorCode.ANNOUNCEMENT_NOT_FOUND, announcementId)
     }
 
