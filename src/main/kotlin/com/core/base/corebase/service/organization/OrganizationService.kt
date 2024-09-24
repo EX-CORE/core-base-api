@@ -2,9 +2,14 @@ package com.core.base.corebase.service.organization
 
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.exception.BaseException
+import com.core.base.corebase.config.AuthenticationFacade
 import com.core.base.corebase.controller.organization.dto.*
 import com.core.base.corebase.domain.organization.Organization
 import com.core.base.corebase.domain.organization.Team
+import com.core.base.corebase.domain.user.Member
+import com.core.base.corebase.domain.user.code.MemberState
+import com.core.base.corebase.domain.user.code.PermissionType
+import com.core.base.corebase.repository.MemberRepository
 import com.core.base.corebase.repository.OrganizationRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -12,10 +17,13 @@ import java.util.*
 
 @Service
 class OrganizationService(
-    private var organizationRepository: OrganizationRepository
+    private var organizationRepository: OrganizationRepository,
+    private var memberRepository: MemberRepository,
+    private var authenticationFacade: AuthenticationFacade
 ) {
 
     fun save(req: OrganizationReq): OrganizationRes =
+
         organizationRepository.save(
             Organization(
                 req.name,
@@ -24,7 +32,14 @@ class OrganizationService(
                 req.telNumber,
                 req.address
             )
-        ).toRes()
+        ).apply {
+            memberRepository.save(
+                Member(authenticationFacade.email,
+                    authenticationFacade.name,
+                    authenticationFacade.uid,
+                    this.id, null,
+                    PermissionType.MANAGER, MemberState.JOIN))
+        }.toRes()
 
     fun update(id: UUID, req: OrganizationReq): OrganizationRes =
         getEntity(id).apply {

@@ -13,8 +13,8 @@ class Member(
     var uid: UUID?, //User
     var organizationId : UUID, //Organization
     var teamId: UUID?, //Team
-    var state: MemberState = MemberState.WAIT,
     var permission: PermissionType,
+    var state: MemberState = MemberState.WAIT,
     @Id val id: UUID = UUID.randomUUID()
 ) {
     fun isWait(): Boolean = state.equals(MemberState.WAIT)
