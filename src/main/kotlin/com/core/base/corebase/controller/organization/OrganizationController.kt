@@ -3,7 +3,6 @@ package com.core.base.corebase.controller.organization
 import com.core.base.corebase.controller.organization.dto.*
 import com.core.base.corebase.service.organization.OrganizationService
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -21,7 +20,7 @@ class OrganizationController(
         organizationService.save(req)
 
     @PutMapping(path = ["/{id}"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun save(@PathVariable id: UUID, @io.swagger.v3.oas.annotations.parameters.RequestBody req: OrganizationReq): OrganizationRes =
+    fun update(@PathVariable id: UUID, @io.swagger.v3.oas.annotations.parameters.RequestBody req: OrganizationReq): OrganizationRes =
         organizationService.update(id, req)
 
     @GetMapping("/{id}")
