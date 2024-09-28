@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class AnnouncementApiTest(
     val mockMvc: MockMvc,
@@ -52,10 +53,10 @@ class AnnouncementApiTest(
 
     Given("Exists two announcement") {
         val announcementList = announcementRepository.saveAll(listOf(
-            Announcement(reviewerMember.organizationId, "test1", "test1", LocalDate.now().minusDays(1)),
-            Announcement(reviewerMember.organizationId, "test2", "test2", LocalDate.now().minusDays(2)),
-            Announcement(managerMember.organizationId, "test1", "test1", LocalDate.now().minusDays(1)),
-            Announcement(managerMember.organizationId, "test2", "test2", LocalDate.now().minusDays(2))
+            Announcement(reviewerMember.organizationId, "test1", "test1", LocalDateTime.now().minusDays(1)),
+            Announcement(reviewerMember.organizationId, "test2", "test2", LocalDateTime.now().minusDays(2)),
+            Announcement(managerMember.organizationId, "test1", "test1", LocalDateTime.now().minusDays(1)),
+            Announcement(managerMember.organizationId, "test2", "test2", LocalDateTime.now().minusDays(2))
         ))
 
         When("Request get announcement list api by reviewer organization") {
@@ -110,7 +111,7 @@ class AnnouncementApiTest(
             )
 
             Then("Return 401") {
-                res.andExpect(status().isUnauthorized)
+                res.andExpect(status().isForbidden())
             }
         }
     }

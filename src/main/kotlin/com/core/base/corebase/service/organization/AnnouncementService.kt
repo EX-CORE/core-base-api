@@ -22,7 +22,7 @@ class AnnouncementService(
 
     @Transactional
     fun getList(uid: UUID, organizationId: UUID): List<AnnouncementRes> {
-        memberRepository.findByUidAndOrganizationIdAndState(uid, organizationId, MemberState.JOIN) ?: throw BaseException(ErrorCode.INVALID_TOKEN)
+        memberRepository.findByUidAndOrganizationIdAndState(uid, organizationId, MemberState.JOIN) ?: throw BaseException(ErrorCode.ANNOUNCEMENT_NOT_ALLOWED)
         return organizationId
             .let { announcementRepository.findByOrganizationIdOrderByCreatedAtDesc(it) }
             .map { it.toRes() }
@@ -49,13 +49,15 @@ class AnnouncementService(
     @Transactional
     fun delete(uid: UUID, organizationId: UUID, announcementId: UUID) {
         checkAuthorization(uid, organizationId)
-        announcementRepository.deleteById(announcementId)
+        announcementRepository.findByIdOrNull(announcementId)
+            ?.also { announcementRepository.delete(it) }
+            ?: throw BaseException(ErrorCode.ANNOUNCEMENT_NOT_FOUND, announcementId)
     }
 
     private fun checkAuthorization(uid: UUID, organizationId: UUID, ) {
         memberRepository.findByUidAndOrganizationIdAndState(uid, organizationId, MemberState.JOIN)
             ?.takeIf { it.permission.equals(PermissionType.MANAGER) }
-            ?: throw BaseException(ErrorCode.INVALID_TOKEN)
+            ?: throw BaseException(ErrorCode.ANNOUNCEMENT_NOT_ALLOWED)
     }
 
 }

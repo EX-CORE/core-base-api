@@ -38,7 +38,7 @@ class AnnouncementServiceTest: BehaviorSpec({
             }
 
             Then("Throw InvalidTokenException") {
-                exception.errorCode shouldBe ErrorCode.INVALID_TOKEN
+                exception.errorCode shouldBe ErrorCode.ANNOUNCEMENT_NOT_ALLOWED
             }
         }
 
@@ -48,7 +48,7 @@ class AnnouncementServiceTest: BehaviorSpec({
             }
 
             Then("Throw InvalidTokenException") {
-                exception.errorCode shouldBe ErrorCode.INVALID_TOKEN
+                exception.errorCode shouldBe ErrorCode.ANNOUNCEMENT_NOT_ALLOWED
             }
         }
 
@@ -58,7 +58,7 @@ class AnnouncementServiceTest: BehaviorSpec({
             }
 
             Then("Throw InvalidTokenException") {
-                exception.errorCode shouldBe ErrorCode.INVALID_TOKEN
+                exception.errorCode shouldBe ErrorCode.ANNOUNCEMENT_NOT_ALLOWED
             }
         }
 
@@ -68,7 +68,7 @@ class AnnouncementServiceTest: BehaviorSpec({
             }
 
             Then("Throw InvalidTokenException") {
-                exception.errorCode shouldBe ErrorCode.INVALID_TOKEN
+                exception.errorCode shouldBe ErrorCode.ANNOUNCEMENT_NOT_ALLOWED
             }
         }
     }
@@ -93,7 +93,7 @@ class AnnouncementServiceTest: BehaviorSpec({
             }
 
             Then("Throw InvalidTokenException") {
-                exception.errorCode shouldBe ErrorCode.INVALID_TOKEN
+                exception.errorCode shouldBe ErrorCode.ANNOUNCEMENT_NOT_ALLOWED
             }
         }
 
@@ -103,7 +103,7 @@ class AnnouncementServiceTest: BehaviorSpec({
             }
 
             Then("Throw InvalidTokenException") {
-                exception.errorCode shouldBe ErrorCode.INVALID_TOKEN
+                exception.errorCode shouldBe ErrorCode.ANNOUNCEMENT_NOT_ALLOWED
             }
         }
 
@@ -113,7 +113,7 @@ class AnnouncementServiceTest: BehaviorSpec({
             }
 
             Then("Throw InvalidTokenException") {
-                exception.errorCode shouldBe ErrorCode.INVALID_TOKEN
+                exception.errorCode shouldBe ErrorCode.ANNOUNCEMENT_NOT_ALLOWED
             }
         }
     }
