@@ -8,5 +8,6 @@ import java.util.*
 class User(
     var name: String,
     var email: String,
+    var profile: String,
     @Id val uid: UUID = UUID.randomUUID()
 )
