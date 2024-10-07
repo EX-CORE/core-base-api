@@ -53,7 +53,7 @@ class AuthService(
             val accessTokenResponse = googleAuthClient.getTokenByCode(it)
             val googleInfoResponse = googleInfoClient.getInfo("Bearer ${accessTokenResponse.accessToken}")
             val user = userRepository.findByEmail(googleInfoResponse.email)
-                ?: userRepository.save(User(googleInfoResponse.name, googleInfoResponse.email))
+                ?: userRepository.save(User(googleInfoResponse.name, googleInfoResponse.email, googleInfoResponse.picture))
                     .also { accountRepository.save(Account(accessTokenResponse.refreshToken, UserState.ACTIVE, it.uid)) }
 
             return AuthDto.LoginRes(
