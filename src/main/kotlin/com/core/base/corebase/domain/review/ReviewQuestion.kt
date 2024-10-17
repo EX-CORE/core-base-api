@@ -1,7 +1,7 @@
 package com.core.base.corebase.domain.review
 
 import com.core.base.corebase.domain.review.code.QuestionType
-import org.springframework.data.annotation.Id
+import jakarta.persistence.Id
 import java.util.*
 
 class ReviewQuestion(

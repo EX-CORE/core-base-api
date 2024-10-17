@@ -1,6 +1,6 @@
 package com.core.base.corebase.domain.review
 
-import org.springframework.data.annotation.Id
+import jakarta.persistence.Id
 import java.util.*
 
 class ReviewChoice(

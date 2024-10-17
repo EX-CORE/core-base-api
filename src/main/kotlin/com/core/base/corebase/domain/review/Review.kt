@@ -1,11 +1,11 @@
 package com.core.base.corebase.domain.review
 
 import com.core.base.corebase.domain.review.code.ReviewState
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import java.util.*
 
-@Document("review")
+@Entity(name = "review")
 class Review (
     val reviewMemberId : UUID, //ReviewMember
     val memberId: UUID, // 평가자 member ID

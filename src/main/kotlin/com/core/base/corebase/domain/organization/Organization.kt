@@ -2,11 +2,11 @@ package com.core.base.corebase.domain.organization
 
 import com.core.base.corebase.common.code.ErrorCode
 import com.core.base.corebase.common.exception.BaseException
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import java.util.*
 
-@Document("organization")
+@Entity(name ="organization")
 class Organization(
     var name: String,
     var logoFileName: String?,

@@ -2,11 +2,11 @@ package com.core.base.corebase.domain.user
 
 import com.core.base.corebase.domain.user.code.MemberState
 import com.core.base.corebase.domain.user.code.PermissionType
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import jakarta.persistence.Id
+import jakarta.persistence.Entity
 import java.util.*
 
-@Document("member")
+@Entity( name = "member")
 class Member(
     var email: String,
     var name: String,

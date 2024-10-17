@@ -1,11 +1,11 @@
 package com.core.base.corebase.domain.user
 
 import com.core.base.corebase.domain.user.code.UserState
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import jakarta.persistence.Id
+import jakarta.persistence.Entity
 import java.util.*
 
-@Document("accounts")
+@Entity( name = "accounts")
 class Account(
     var refreshToken: String,
     var state: UserState,

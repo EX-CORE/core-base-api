@@ -5,6 +5,32 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.4"
 	kotlin("jvm") version "1.9.22"
 	kotlin("plugin.spring") version "1.9.22"
+	kotlin("plugin.allopen") version "1.9.22" // noArg 플러그인 추가
+	kotlin("plugin.noarg") version "1.9.22" // noArg 플러그인 추가
+}
+
+buildscript {
+	val kotlinVersion by extra("1.7.10")
+	val springBootVersion by extra("2.7.5")
+	val springCloudVersion by extra("2021.0.3")
+	val queryDslVersion by extra("5.0.0")
+
+	val springfoxVersion by extra("3.0.0")
+	val modelmapperVersion by extra("3.1.0")
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+		classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
+		classpath("org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion")
+	}
+}
+allprojects {
+
 }
 
 group = "com.core.base"
@@ -12,6 +38,18 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
+}
+
+allOpen {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperclass")
+	annotation("jakarta.persistence.Embeddable")
+}
+
+noArg {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperclass")
+	annotation("jakarta.persistence.Embeddable")
 }
 
 configurations {
@@ -29,7 +67,6 @@ tasks.compileJava {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -37,6 +74,13 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	runtimeOnly("com.mysql:mysql-connector-j")
+
+	compileOnly ("org.projectlombok:lombok")
+	annotationProcessor ("org.projectlombok:lombok")
+
+	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jpa")
 	// Add these dependencies
 	implementation ("javax.xml.bind:jaxb-api:2.3.1")
 	implementation ("org.glassfish.jaxb:jaxb-runtime:2.3.1")
