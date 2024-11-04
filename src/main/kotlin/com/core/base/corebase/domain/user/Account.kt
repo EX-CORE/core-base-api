@@ -1,13 +1,27 @@
 package com.core.base.corebase.domain.user
 
 import com.core.base.corebase.domain.user.code.UserState
-import jakarta.persistence.Id
-import jakarta.persistence.Entity
+import jakarta.persistence.*
 import java.util.*
 
-@Entity( name = "accounts")
+@Entity(name = "accounts")
 class Account(
-    var refreshToken: String,
-    var state: UserState,
-    @Id val uid: UUID = UUID.randomUUID()
-)
+    refreshToken: String,
+    state: UserState,
+    user: User
+) {
+    @Id
+    @Column(name = "uid", insertable = false, updatable = false, columnDefinition = "BINARY(16)")
+    var uid: UUID = UUID.randomUUID();
+
+    @MapsId("uid")
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
+    @JoinColumn(name = "uid", referencedColumnName = "uid", insertable = false, updatable = false)
+    var user: User = user; protected set
+
+    var state: UserState = state; protected set
+
+    var refreshToken: String = refreshToken;
+
+
+}

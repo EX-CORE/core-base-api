@@ -36,14 +36,14 @@ class AnnouncementApiTest(
     val objectMapper: ObjectMapper,
 ) : IntegrationTestSpec({
 
-    val user: User = userRepository.save(User("test", "test"))
-    val account: Account = accountRepository.save(Account("refreshToken", UserState.ACTIVE, user.uid))
+    val user: User = userRepository.save(User("test", "test", ""))
+    val account: Account = accountRepository.save(Account("refreshToken", UserState.ACTIVE, user))
 
-    val managerOrganization: Organization = organizationRepository.save(Organization("managerOrganization", "test", "test", "test", "test", mutableListOf()))
-    val managerMember = memberRepository.save(Member(user.email, user.name, user.uid, managerOrganization.id, null, MemberState.JOIN, PermissionType.MANAGER))
+    val managerOrganization: Organization = organizationRepository.save(Organization("managerOrganization", "test", "test", "test", "test"))
+    val managerMember = memberRepository.save(Member(user.email, user.name, user, managerOrganization, null, PermissionType.MANAGER, MemberState.JOIN))
 
-    val reviewerOrganization: Organization = organizationRepository.save(Organization("reviewerOrganization", "test", "test", "test", "test", mutableListOf()))
-    val reviewerMember = memberRepository.save(Member(user.email, user.name, user.uid, reviewerOrganization.id, null, MemberState.JOIN, PermissionType.REVIEWER))
+    val reviewerOrganization: Organization = organizationRepository.save(Organization("reviewerOrganization", "test", "test", "test", "test"))
+    val reviewerMember = memberRepository.save(Member(user.email, user.name, user, reviewerOrganization, null, PermissionType.REVIEWER, MemberState.JOIN))
 
     val accessToken = jwtProvider.generateAccessToken(user.uid)
 
@@ -53,11 +53,11 @@ class AnnouncementApiTest(
 
     Given("Exists two announcement") {
         val announcementList = announcementRepository.saveAll(listOf(
-            Announcement(reviewerMember.organizationId, "test1", "test1", LocalDateTime.now().minusDays(1)),
-            Announcement(reviewerMember.organizationId, "test2", "test2", LocalDateTime.now().minusDays(2)),
-            Announcement(managerMember.organizationId, "test1", "test1", LocalDateTime.now().minusDays(1)),
-            Announcement(managerMember.organizationId, "test2", "test2", LocalDateTime.now().minusDays(2))
-        ))
+            Announcement(reviewerMember.organization, "test1", "test1" ),
+            Announcement(reviewerMember.organization, "test2", "test2" ),
+            Announcement(managerMember.organization, "test1", "test1" ),
+            Announcement(managerMember.organization, "test2", "test2"))
+        )
 
         When("Request get announcement list api by reviewer organization") {
             val res = getBaseMockMvc(get("/announcement")
@@ -117,7 +117,7 @@ class AnnouncementApiTest(
     }
 
     Given("Exists announcement in manager organization") {
-        val announcement = announcementRepository.save(Announcement(managerOrganization.id, "title", "content"))
+        val announcement = announcementRepository.save(Announcement(managerOrganization, "title", "content"))
 
         When("Request update announcement api") {
             val announcementReq = AnnouncementReq("updateTitle", "updateContent")

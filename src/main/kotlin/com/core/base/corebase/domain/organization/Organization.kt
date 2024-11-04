@@ -1,47 +1,42 @@
 package com.core.base.corebase.domain.organization
 
-import com.core.base.corebase.common.code.ErrorCode
-import com.core.base.corebase.common.exception.BaseException
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import java.util.*
+import jakarta.persistence.*
+import net.huray.backend.minuting.entity.common.BaseDateTimeEntity
 
 @Entity(name ="organization")
 class Organization(
-    var name: String,
-    var logoFileName: String?,
-    var ceo: String?,
-    var telNumber: String?,
-    var address: String?,
-    val teams: MutableList<Team>? = mutableListOf(),
-    @Id val id: UUID = UUID.randomUUID()
-) {
-    fun addTeam(team: Team) {
-        if (teams == null) {
-            throw BaseException(ErrorCode.ORGANIZATION_HAS_NOT_TEAM, id)
-        } else {
-            teams.add(team)
-        }
-    }
+    name: String,
+    logoFileName: String?,
+    ceo: String?,
+    telNumber: String?,
+    address: String?,
+) : BaseDateTimeEntity() {
 
-    // 특정 id를 가진 팀을 teams 리스트에서 삭제하는 함수
-    fun removeTeamById(teamId: UUID): Boolean {
-        if (teams == null) {
-            throw BaseException(ErrorCode.ORGANIZATION_HAS_NOT_TEAM, id)
-        }
-        return teams.removeIf { it.id == teamId }
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0L
 
-    fun updateTeamById(teamId: UUID, name: String, order: Int, parentId: UUID?) {
-        if (teams == null) {
-            throw BaseException(ErrorCode.ORGANIZATION_HAS_NOT_TEAM, id)
-        }
-        if (parentId != null && teams.indexOfFirst { it.id == parentId } == -1) {
-            throw BaseException(ErrorCode.ORGANIZATION_TEAM_PARENT_NOT_FOUND, parentId)
-        }
-        val index = teams.indexOfFirst { it.id == teamId }
-        if (index != -1) {
-            teams[index] = Team(name, order, parentId, teamId)
-        }
+    var name = name; protected set
+    var logoFileName = logoFileName; protected set
+    var ceo = ceo; protected set
+    var telNumber = telNumber; protected set
+    var address = address; protected set
+
+    @OneToMany(mappedBy = "organization", cascade = [CascadeType.ALL])
+    protected val mutableTeams: MutableList<Team> = mutableListOf()
+    val teams: List<Team> get() = mutableTeams.toList()
+
+    fun update(
+        name: String?,
+        logoFileName: String?,
+        ceo: String?,
+        telNumber: String?,
+        address: String?,
+    ) {
+        this.name = name ?: this.name
+        this.logoFileName = logoFileName ?: this.logoFileName
+        this.ceo = ceo ?: this.ceo
+        this.telNumber = telNumber ?: this.telNumber
+        this.address = address ?: this.address
     }
 }

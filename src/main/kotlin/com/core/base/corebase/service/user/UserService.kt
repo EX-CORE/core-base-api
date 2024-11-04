@@ -27,21 +27,24 @@ class UserService(
 
     @Transactional(readOnly = true)
     fun getUserOrganization(uid: UUID): UserOrganizationRes =
-        memberRepository.findByUid(uid)
-            .run {
-                val info = this.map { it.organizationId }
-                    .let { organizationRepository.findAllById(it).associateBy { it.id } }
-
-                UserOrganizationRes(
-                    filter { !it.isWait() }.run { map {
-                        val org = info.get(it.organizationId)
-                        ParticipationUserOrganization(it.organizationId, org?.logoFileName, org?.name, it.permission)
-                    } },
-                    filter { it.isWait() }.run { map {
-                        val org = info.get(it.organizationId)
-                        InvitedUserOrganization(it.organizationId, org?.logoFileName, org?.name)
-                    } }
-                )
-            }
-
+        userRepository.findByUid(uid)
+            ?.run {
+                members
+                    .run {
+                        UserOrganizationRes(
+                            filter { !it.isWait() }.run {
+                                map {
+                                    val org = it.organization
+                                    ParticipationUserOrganization(org.id, org?.logoFileName, org?.name, it.permission)
+                                }
+                            },
+                            filter { it.isWait() }.run {
+                                map {
+                                    val org = it.organization
+                                    InvitedUserOrganization(org.id, org?.logoFileName, org?.name)
+                                }
+                            }
+                        )
+                    }
+            } ?: throw BaseException(ErrorCode.USER_NOT_FOUND, uid)
 }

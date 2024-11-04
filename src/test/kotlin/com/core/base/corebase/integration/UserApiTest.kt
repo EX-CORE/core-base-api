@@ -21,8 +21,8 @@ class UserApiTest(
 
     Given("User have organizations and invited organizations"){
         val user = userDataSetup.addUser()
-        val participationOrganizationId = organizationDataSetup.addMember(user = user, state = MemberState.JOIN).organizationId
-        val invitedOrganizationId = organizationDataSetup.addMember(user = user, state = MemberState.WAIT).organizationId
+        val participationOrganizationId = organizationDataSetup.addMember(user = user, state = MemberState.JOIN).organization
+        val invitedOrganizationId = organizationDataSetup.addMember(user = user, state = MemberState.WAIT).organization
 
         When("Request get user organization api"){
             val res = mockMvc.perform(

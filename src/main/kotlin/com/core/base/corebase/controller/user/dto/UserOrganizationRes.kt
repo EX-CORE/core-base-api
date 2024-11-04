@@ -8,14 +8,14 @@ data class UserOrganizationRes(
     val invitedOrganizations: List<InvitedUserOrganization>
 ) {
     data class ParticipationUserOrganization(
-        val id: UUID,
+        val id: Long,
         val logo: String?,
         val name: String?,
         val permission: PermissionType
     )
 
     data class InvitedUserOrganization(
-        val id: UUID,
+        val id: Long,
         val logo: String?,
         val name: String?
     )

@@ -5,7 +5,6 @@ import com.core.base.corebase.client.GoogleInfoClient
 import com.core.base.corebase.client.dto.AuthDto
 import com.core.base.corebase.client.dto.GoogleDto
 import com.core.base.corebase.common.code.ErrorCode
-import com.core.base.corebase.common.code.LoginType
 import com.core.base.corebase.common.exception.BaseException
 import com.core.base.corebase.config.GoogleProperties
 import com.core.base.corebase.domain.user.Account
@@ -17,7 +16,6 @@ import com.core.base.corebase.repository.UserRepository
 import com.core.base.corebase.support.JwtProvider
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class AuthService(
@@ -54,7 +52,7 @@ class AuthService(
             val googleInfoResponse = googleInfoClient.getInfo("Bearer ${accessTokenResponse.accessToken}")
             val user = userRepository.findByEmail(googleInfoResponse.email)
                 ?: userRepository.save(User(googleInfoResponse.name, googleInfoResponse.email, googleInfoResponse.picture))
-                    .also { accountRepository.save(Account(accessTokenResponse.refreshToken, UserState.ACTIVE, it.uid)) }
+                    .also { accountRepository.save(Account(accessTokenResponse.refreshToken, UserState.ACTIVE, it)) }
 
             return AuthDto.LoginRes(
                 jwtProvider.generateAccessToken(user.uid),

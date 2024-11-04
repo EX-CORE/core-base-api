@@ -111,7 +111,7 @@ class AuthApiTest(
 
                     val allAccount = accountRepository.findAll()
                     allAccount.size shouldBe 1
-                    allAccount.get(0).uid shouldBe allUser.get(0).uid
+                    allAccount.get(0).user.uid shouldBe allUser.get(0).uid
                 }
             }
         }
@@ -136,7 +136,7 @@ class AuthApiTest(
 
                     val allAccount = accountRepository.findAll()
                     allAccount.size shouldBe 1
-                    allAccount.get(0).uid shouldBe user.uid
+                    allAccount.get(0).user.uid shouldBe user.uid
                 }
             }
         }
