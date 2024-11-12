@@ -12,7 +12,7 @@ class Account(
 ) {
     @Id
     @Column(name = "uid", insertable = false, updatable = false, columnDefinition = "BINARY(16)")
-    var uid: UUID = UUID.randomUUID();
+    var uid: UUID = user.uid
 
     @MapsId("uid")
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
