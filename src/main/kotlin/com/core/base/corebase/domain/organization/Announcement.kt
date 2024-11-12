@@ -1,19 +1,25 @@
 package com.core.base.corebase.domain.organization
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.*
+import jakarta.persistence.*
+import net.huray.backend.minuting.entity.common.BaseDateTimeEntity
 
-@Document("announcement")
+@Entity(name = "announcement")
 class Announcement(
-    val organizationId: UUID,
-    var title: String,
-    var content: String,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-    @Id val id: UUID = UUID.randomUUID()
-) {
+    organization: Organization,
+    title: String,
+    content: String
+): BaseDateTimeEntity() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0L
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id", nullable = false)
+    var organization: Organization = organization; protected set
+
+    var title = title; protected set
+    var content = content; protected set
+
     fun update(title: String, content: String) {
         this.title = title
         this.content = content

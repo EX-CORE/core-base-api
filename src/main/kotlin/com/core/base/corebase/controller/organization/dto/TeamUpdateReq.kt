@@ -1,10 +1,8 @@
 package com.core.base.corebase.controller.organization.dto
 
-import java.util.UUID
-
 class TeamUpdateReq(
-    val id: UUID,
+    val id: Long,
     val name: String,
     val order: Int,
-    val parentsId: UUID?
+    val parentsId: Long?
 )

@@ -20,27 +20,27 @@ class OrganizationController(
         organizationService.save(req)
 
     @PutMapping(path = ["/{id}"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun update(@PathVariable id: UUID, @io.swagger.v3.oas.annotations.parameters.RequestBody req: OrganizationReq): OrganizationRes =
+    fun update(@PathVariable id: Long, @io.swagger.v3.oas.annotations.parameters.RequestBody req: OrganizationReq): OrganizationRes =
         organizationService.update(id, req)
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: UUID): OrganizationRes =
+    fun get(@PathVariable id: Long): OrganizationRes =
         organizationService.get(id)
 
     @GetMapping("/{id}/teams")
-    fun listTeam(@PathVariable id: UUID): List<TeamRes> =
+    fun listTeam(@PathVariable id: Long): List<TeamRes> =
         organizationService.listTeam(id)
 
     @PostMapping("/{id}/teams")
-    fun saveTeam(@PathVariable id: UUID, @RequestBody req: TeamReq): TeamRes =
+    fun saveTeam(@PathVariable id: Long, @RequestBody req: TeamReq): TeamRes =
         organizationService.saveTeam(id, req)
 
     @PutMapping("/{id}/teams")
-    fun updateTeam(@PathVariable id: UUID, @RequestBody req: List<TeamUpdateReq>) =
+    fun updateTeam(@PathVariable id: Long, @RequestBody req: List<TeamUpdateReq>) =
         organizationService.updateTeam(id, req)
 
     @DeleteMapping("/{id}/teams/{teamId}")
-    fun deleteTeam(@PathVariable id: UUID, @PathVariable teamId: UUID) =
+    fun deleteTeam(@PathVariable id: Long, @PathVariable teamId: Long) =
         organizationService.deleteTeam(id, teamId)
 
 }

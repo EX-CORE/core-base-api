@@ -17,11 +17,11 @@ class OrganizationDataSetup(
 ) {
 
     fun addOrganization(name: String = "활빈당") =
-        organizationRepository.save(Organization(name, "logo.png", "ceo", "telNumber", "address", mutableListOf()))
+        organizationRepository.save(Organization(name, "logo.png", "ceo", "telNumber", "address"))
 
     fun addMember(user: User = userDataSetup.addUser(), organization: Organization = addOrganization(),
                   state: MemberState = MemberState.JOIN, permissionType: PermissionType = PermissionType.REVIEWER) =
-        memberRepository.save(Member(user.email, user.name, user.uid,
-            organization.id, null, state, permissionType))
+        memberRepository.save(Member(user.email, user.name, user,
+            organization, null, permissionType, state))
 
 }

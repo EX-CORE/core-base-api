@@ -11,19 +11,23 @@ import com.core.base.corebase.domain.user.code.MemberState
 import com.core.base.corebase.domain.user.code.PermissionType
 import com.core.base.corebase.repository.MemberRepository
 import com.core.base.corebase.repository.OrganizationRepository
+import com.core.base.corebase.repository.TeamRepository
+import com.core.base.corebase.repository.UserRepository
 import org.springframework.stereotype.Service
-import java.util.*
+import org.springframework.transaction.annotation.Transactional
 
 
+@Transactional(readOnly = true)
 @Service
 class OrganizationService(
     private var organizationRepository: OrganizationRepository,
     private var memberRepository: MemberRepository,
-    private var authenticationFacade: AuthenticationFacade
+    private var userRepository: UserRepository,
+    private var authenticationFacade: AuthenticationFacade, private val teamRepository: TeamRepository
 ) {
 
+    @Transactional
     fun save(req: OrganizationReq): OrganizationRes =
-
         organizationRepository.save(
             Organization(
                 req.name,
@@ -33,61 +37,72 @@ class OrganizationService(
                 req.address
             )
         ).apply {
+            var user = userRepository.findByUid(authenticationFacade.uid)
+                ?: throw BaseException(ErrorCode.USER_NOT_FOUND, authenticationFacade.uid)
             memberRepository.save(
-                Member(authenticationFacade.email,
+                Member(
+                    authenticationFacade.email,
                     authenticationFacade.name,
-                    authenticationFacade.uid,
-                    this.id, null,
-                    PermissionType.MANAGER, MemberState.JOIN))
+                    user, this, null,
+                    PermissionType.MANAGER, MemberState.JOIN
+                )
+            )
         }.toRes()
 
-    fun update(id: UUID, req: OrganizationReq): OrganizationRes =
-        getEntity(id).apply {
-            name = req.name
-            logoFileName = req.logo?.originalFilename
-            ceo = req.ceo
-            telNumber = req.telNumber
-            address = req.address
-        }.let {
-            organizationRepository.save(it)
-        }.toRes()
-
-    fun get(id: UUID): OrganizationRes =
-        getRes(id)
-
-    fun listTeam(id: UUID): List<TeamRes> =
-        getRes(id).teams.orEmpty()
-
-
-    fun updateTeam(id: UUID, teams: List<TeamUpdateReq>) {
-        val organization = getEntity(id)
-        teams.map {
-            organization.updateTeamById(it.id, it.name, it.order, it.parentsId)
-        }
-        organizationRepository.save(organization)
-    }
-
-    fun deleteTeam(id: UUID, teamId: UUID) =
+    @Transactional
+    fun update(id: Long, req: OrganizationReq): OrganizationRes =
         getEntity(id)
             .let {
-                it.removeTeamById(teamId)
-                organizationRepository.save(it)
+                it.update(
+                    req.name,
+                    req.logo?.originalFilename,
+                    req.ceo,
+                    req.telNumber,
+                    req.address
+                )
+                it.toRes()
             }
 
-    fun saveTeam(id: UUID, req: TeamReq): TeamRes {
+    fun get(id: Long): OrganizationRes =
+        getRes(id)
+
+    fun listTeam(id: Long): List<TeamRes> =
+        getRes(id).teams.orEmpty()
+
+    @Transactional
+    fun updateTeam(id: Long, teams: List<TeamUpdateReq>) {
+        teams.map {
+            getTeamEntity(id, it.id)
+                .update(it.name, it.order, it.parentsId)
+        }
+    }
+
+    @Transactional
+    fun deleteTeam(organizationId: Long, teamId: Long) =
+        getTeamEntity(organizationId, teamId)
+            .run { teamRepository.delete(this) }
+
+    @Transactional
+    fun saveTeam(id: Long, req: TeamReq): TeamRes {
         val organization = getEntity(id)
-        val team = Team(req.name, req.order, req.parentsId)
-        organization.addTeam(team)
-        organizationRepository.save(organization)
+        val team = Team(req.name, req.order, req.parentsId, organization)
+        teamRepository.save(team)
         return team.toRes()
     }
 
-
-    private fun getEntity(id: UUID) =
+    private fun getEntity(id: Long) =
         organizationRepository.findById(id)
             .orElseThrow { BaseException(ErrorCode.ORGANIZATION_NOT_FOUND, id) }
 
-    private fun getRes(id: UUID) =
+    private fun getTeamEntity(organizationId: Long, teamId: Long) =
+        getEntity(organizationId)
+            .let {
+                teamRepository.findByOrganizationAndId(it, teamId)
+                    .orElseThrow { BaseException(ErrorCode.ORGANIZATION_HAS_NOT_TEAM, teamId) }
+            }
+
+
+    private fun getRes(id: Long) =
         getEntity(id)
             .toRes()
 
@@ -98,7 +113,7 @@ class OrganizationService(
         )
 
     fun Team.toRes(): TeamRes =
-        TeamRes(id, name, order, parentId)
+        TeamRes(id, name, order, parents?.id)
 
 
 }

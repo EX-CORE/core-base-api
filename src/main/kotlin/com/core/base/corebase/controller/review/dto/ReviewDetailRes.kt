@@ -1,6 +1,6 @@
 package com.core.base.corebase.controller.review.dto
 
-import com.core.base.corebase.domain.review.Period
+import com.core.base.corebase.domain.review.ReviewPeriod
 import com.core.base.corebase.domain.review.code.StateType
 import java.util.*
 
@@ -8,9 +8,9 @@ class ReviewDetailRes(
     id: UUID,
     title: String,
     description: String,
-    surveyPeriod: Period,
-    reviewPeriod: Period,
-    organizationId: UUID,
+    surveyPeriod: ReviewPeriod,
+    reviewPeriod: ReviewPeriod,
+    organizationId: Long,
     sections: List<ReviewerSectionRes>,
     state: StateType,
     val revieweeName: String,

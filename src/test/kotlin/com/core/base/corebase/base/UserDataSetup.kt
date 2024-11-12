@@ -16,8 +16,8 @@ class UserDataSetup(
 ) {
 
     fun addUser(name: String = "홍길동", email: String = "email@email.com") =
-        userRepository.save(User(name, email))
-            .also { accountRepository.save(Account("refreshToken", UserState.ACTIVE, it.uid)) }
+        userRepository.save(User(name, email, ""))
+            .also { accountRepository.save(Account("refreshToken", UserState.ACTIVE, it)) }
 
     fun getAccessToken(user: User = addUser()) = jwtProvider.generateAccessToken(user.uid)
 

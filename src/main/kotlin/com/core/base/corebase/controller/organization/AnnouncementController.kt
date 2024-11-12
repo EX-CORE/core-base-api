@@ -18,22 +18,22 @@ class AnnouncementController(
 ) {
 
     @GetMapping
-    fun getList(@RequestParam organizationId: UUID): List<AnnouncementRes> = announcementService.getList(authenticationFacade.uid, organizationId)
+    fun getList(@RequestParam organizationId: Long): List<AnnouncementRes> = announcementService.getList(authenticationFacade.uid, organizationId)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun save(@RequestBody announcementReq: AnnouncementReq, @RequestParam organizationId: UUID) {
+    fun save(@RequestBody announcementReq: AnnouncementReq, @RequestParam organizationId: Long) {
         announcementService.save(announcementReq, authenticationFacade.uid, organizationId)
     }
 
     @PutMapping("/{announcementId}")
-    fun update(@RequestBody announcementReq: AnnouncementReq, @RequestParam organizationId: UUID, @PathVariable announcementId: UUID) {
+    fun update(@RequestBody announcementReq: AnnouncementReq, @RequestParam organizationId: Long, @PathVariable announcementId: Long) {
         announcementService.update(announcementReq, authenticationFacade.uid, organizationId, announcementId)
     }
 
     @DeleteMapping("/{announcementId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@RequestParam organizationId: UUID, @PathVariable announcementId: UUID) {
+    fun delete(@RequestParam organizationId: Long, @PathVariable announcementId: Long) {
         announcementService.delete(authenticationFacade.uid, organizationId, announcementId)
     }
 

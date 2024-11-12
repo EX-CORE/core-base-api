@@ -1,9 +1,7 @@
 package com.core.base.corebase.controller.organization.dto
 
-import java.util.*
-
 class OrganizationRes(
-    val id: UUID,
+    val id: Long,
     val name: String,
     val logoFileName: String?,
     val ceo: String?,

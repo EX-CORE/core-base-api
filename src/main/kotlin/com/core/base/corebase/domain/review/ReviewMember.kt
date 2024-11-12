@@ -1,18 +1,25 @@
 package com.core.base.corebase.domain.review
 
 import com.core.base.corebase.domain.user.Member
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-import java.util.*
+import jakarta.persistence.*
 
-@Document("review_member")
+@Entity(name = "review_member")
 class ReviewMember(
-    val member: Member, //Member
-    val reviewId: UUID, // Review
-    var preSurvey: ReviewPreSurvey?,
-    @Id val id: UUID = UUID.randomUUID()
+    member: Member, //Member
+    review: Review, // Review
 ){
-    fun executePreSurvey( preSurvey: ReviewPreSurvey) {
-        this.preSurvey = preSurvey
-    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0L
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_id", nullable = false)
+    var review: Review = review; protected set
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    var member: Member = member; protected set
+
 }

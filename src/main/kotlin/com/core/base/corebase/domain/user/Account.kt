@@ -1,13 +1,27 @@
 package com.core.base.corebase.domain.user
 
 import com.core.base.corebase.domain.user.code.UserState
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import jakarta.persistence.*
 import java.util.*
 
-@Document("accounts")
+@Entity(name = "accounts")
 class Account(
-    var refreshToken: String,
-    var state: UserState,
-    @Id val uid: UUID = UUID.randomUUID()
-)
+    refreshToken: String,
+    state: UserState,
+    user: User
+) {
+    @Id
+    @Column(name = "uid", insertable = false, updatable = false, columnDefinition = "BINARY(16)")
+    var uid: UUID = UUID.randomUUID();
+
+    @MapsId("uid")
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
+    @JoinColumn(name = "uid", referencedColumnName = "uid", insertable = false, updatable = false)
+    var user: User = user; protected set
+
+    var state: UserState = state; protected set
+
+    var refreshToken: String = refreshToken;
+
+
+}

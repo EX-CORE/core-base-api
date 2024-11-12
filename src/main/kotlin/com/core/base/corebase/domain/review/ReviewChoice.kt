@@ -1,12 +1,31 @@
 package com.core.base.corebase.domain.review
 
-import org.springframework.data.annotation.Id
+import jakarta.persistence.*
 import java.util.*
 
+@Entity(name = "review_choice")
 class ReviewChoice(
+   label: String,
+   order: Int,
+   score: Int?,
+   reviewAnswer: ReviewAnswer,
+   reviewBase: ReviewBase
+){
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0L
 
-    val label: String,
-    val order: Int,
-    val score: Int?,
-    @Id val id : UUID = UUID.randomUUID()
-)
+    var label = label; protected set
+    var order = order; protected set
+    var score = score; protected set
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_answer_id", nullable = false)
+    var reviewAnswer: ReviewAnswer = reviewAnswer; protected set
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_base_id", nullable = false)
+    var reviewBase: ReviewBase = reviewBase; protected set
+
+
+}
