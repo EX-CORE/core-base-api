@@ -73,7 +73,7 @@ class OrganizationService(
     fun updateTeam(id: Long, teams: List<TeamUpdateReq>) {
         teams.map {
             getTeamEntity(id, it.id)
-                .update(it.name, it.order, it.parentsId)
+                .update(it.name, it.orderNum, it.parentsId)
         }
     }
 
@@ -85,7 +85,7 @@ class OrganizationService(
     @Transactional
     fun saveTeam(id: Long, req: TeamReq): TeamRes {
         val organization = getEntity(id)
-        val team = Team(req.name, req.order, req.parentsId, organization)
+        val team = Team(req.name, req.orderNum, req.parentsId, organization)
         teamRepository.save(team)
         return team.toRes()
     }
@@ -113,7 +113,7 @@ class OrganizationService(
         )
 
     fun Team.toRes(): TeamRes =
-        TeamRes(id, name, order, parents?.id)
+        TeamRes(id, name, orderNum, parents?.id)
 
 
 }

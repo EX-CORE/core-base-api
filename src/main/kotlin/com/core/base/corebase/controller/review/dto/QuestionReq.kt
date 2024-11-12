@@ -7,7 +7,7 @@ class QuestionReq (
     val type: QuestionType,
     val choices: List<ChoiceReq>,
     val limit: Int?,
-    val order: Int,
+    val orderNum: Int,
     val useScore: Boolean,
     val useMultiSelect: Boolean
 ) 

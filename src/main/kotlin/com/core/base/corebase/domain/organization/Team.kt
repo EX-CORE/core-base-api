@@ -6,7 +6,7 @@ import net.huray.backend.minuting.entity.common.BaseDateTimeEntity
 @Entity(name ="team")
 class Team(
     name: String,
-    order: Int,
+    orderNum: Int,
     parentId: Long?,
     organization: Organization
 ): BaseDateTimeEntity() {
@@ -16,7 +16,7 @@ class Team(
     var id: Long = 0L
 
     var name = name; protected set
-    var order = order; protected set
+    var orderNum = orderNum; protected set
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", insertable = false, updatable = false)
@@ -31,9 +31,9 @@ class Team(
     var organization: Organization = organization; protected set
 
 
-    fun update(name: String, order: Int, parentId: Long?) {
+    fun update(name: String, orderNum: Int, parentId: Long?) {
         this.name = name
-        this.order = order
+        this.orderNum = orderNum
         this.parentId = parentId
     }
 }

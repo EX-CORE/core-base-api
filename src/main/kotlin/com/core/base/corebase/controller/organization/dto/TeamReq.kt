@@ -4,6 +4,6 @@ import java.util.UUID
 
 class TeamReq(
     val name: String,
-    val order: Int,
+    val orderNum: Int,
     val parentsId: Long?
 )

@@ -5,7 +5,7 @@ import jakarta.persistence.*
 @Entity(name = "review_section")
 class ReviewSection(
    name: String,
-   order: Int,
+   orderNum: Int,
    reviewBase: ReviewBase
 ){
 
@@ -15,7 +15,7 @@ class ReviewSection(
 
    var name = name; protected set
 
-   var order = order; protected set
+   var orderNum = orderNum; protected set
 
    @OneToMany(mappedBy = "reviewSection", cascade = [CascadeType.ALL])
    protected val mutableReviewQuestions: MutableList<ReviewQuestion> = mutableListOf()

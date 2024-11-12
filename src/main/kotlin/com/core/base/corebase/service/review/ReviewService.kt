@@ -29,8 +29,8 @@
 //                    it.questions.map { q ->
 //                        ReviewQuestion(
 //                            q.question, q.type,
-//                            q.limit, q.order,
-//                            q.choices.map { c -> ReviewChoice(c.label, c.order, c.score) },
+//                            q.limit, q.orderNum,
+//                            q.choices.map { c -> ReviewChoice(c.label, c.orderNum, c.score) },
 //                            q.useScore,
 //                            q.useMultiSelect
 //                        )
@@ -90,10 +90,10 @@
 //        ReviewerSectionRes(name, questions.map { it.toRes() }, order)
 //
 //    private fun ReviewQuestion.toRes() =
-//        QuestionRes(id, question, type, choices?.map { it.toRes() }, limit, order, useScore, useMultiSelect)
+//        QuestionRes(id, question, type, choices?.map { it.toRes() }, limit, orderNum, useScore, useMultiSelect)
 //
 //    private fun ReviewChoice.toRes() =
-//        ChoiceRes(id, label, order, score)
+//        ChoiceRes(id, label, orderNum, score)
 //
 //    private fun ReviewMember.toRes() =
 //        ReviewMemberRes(member.id, member.name)

@@ -6,7 +6,7 @@ import java.util.*
 @Entity(name = "review_choice")
 class ReviewChoice(
    label: String,
-   order: Int,
+   orderNum: Int,
    score: Int?,
    reviewAnswer: ReviewAnswer,
    reviewBase: ReviewBase
@@ -16,7 +16,7 @@ class ReviewChoice(
     var id: Long = 0L
 
     var label = label; protected set
-    var order = order; protected set
+    var orderNum = orderNum; protected set
     var score = score; protected set
 
     @ManyToOne(fetch = FetchType.LAZY)

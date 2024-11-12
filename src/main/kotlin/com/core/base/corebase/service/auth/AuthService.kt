@@ -28,7 +28,6 @@ class AuthService(
     private val memberRepository: MemberRepository
 ) {
 
-
     fun getUserGoogleCode(): String = with(googleProperties) {
         "https://accounts.google.com/o/oauth2/v2/auth" +
                 "?client_id=${clientId}" +

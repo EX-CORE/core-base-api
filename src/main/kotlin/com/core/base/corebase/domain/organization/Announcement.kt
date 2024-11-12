@@ -9,6 +9,7 @@ class Announcement(
     title: String,
     content: String
 ): BaseDateTimeEntity() {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0L

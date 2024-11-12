@@ -9,7 +9,7 @@ class QuestionRes (
     val type: QuestionType,
     val choices: List<ChoiceRes>?,
     val limit: Int?,
-    val order: Int,
+    val orderNum: Int,
     var useScore: Boolean,
     var useMultiSelect: Boolean
 ) 

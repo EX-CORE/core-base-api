@@ -9,7 +9,7 @@ class ReviewQuestion(
     question: String,
     type: QuestionType,
     limit: Int?,
-    order: Int,
+    orderNum: Int,
     useScore: Boolean,
     useMultiSelect: Boolean,
     reviewSection: ReviewSection
@@ -22,7 +22,7 @@ class ReviewQuestion(
     @Enumerated(EnumType.STRING)
     var type = type; protected set
     var limit = limit; protected set
-    var order = order; protected set
+    var orderNum = orderNum; protected set
     var useScore = useScore; protected set
     var useMultiSelect = useMultiSelect; protected set
 

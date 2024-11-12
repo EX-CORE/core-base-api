@@ -5,6 +5,6 @@ import java.util.*
 class ChoiceRes(
     val id: UUID,
     val label: String,
-    val order: Int,
+    val orderNum: Int,
     var score: Int?
 ) 

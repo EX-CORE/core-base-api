@@ -5,6 +5,6 @@ import java.util.*
 class TeamRes(
     val id: Long,
     val name: String,
-    val order: Int,
+    val orderNum: Int,
     var parentsId: Long? = null
 )
