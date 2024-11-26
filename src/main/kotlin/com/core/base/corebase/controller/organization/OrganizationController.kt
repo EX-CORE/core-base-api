@@ -39,6 +39,10 @@ class OrganizationController(
     fun updateTeam(@PathVariable id: Long, @RequestBody req: List<TeamUpdateReq>) =
         organizationService.updateTeam(id, req)
 
+    @PatchMapping("/{id}/teams/order")
+    fun updateTeamOrder(@PathVariable id: Long, @RequestBody req: List<TeamOrderUpdateReq>) =
+        organizationService.updateTeamOrder(id, req)
+
     @DeleteMapping("/{id}/teams/{teamId}")
     fun deleteTeam(@PathVariable id: Long, @PathVariable teamId: Long) =
         organizationService.deleteTeam(id, teamId)

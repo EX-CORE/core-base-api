@@ -78,6 +78,14 @@ class OrganizationService(
     }
 
     @Transactional
+    fun updateTeamOrder(id: Long, teams: List<TeamOrderUpdateReq>) {
+        teams.map {
+            getTeamEntity(id, it.id)
+                .update(it.orderNum, it.parentsId)
+        }
+    }
+
+    @Transactional
     fun deleteTeam(organizationId: Long, teamId: Long) =
         getTeamEntity(organizationId, teamId)
             .run { teamRepository.delete(this) }

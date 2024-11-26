@@ -36,4 +36,9 @@ class Team(
         this.orderNum = orderNum
         this.parentId = parentId
     }
+
+    fun update(orderNum: Int, parentId: Long?) {
+        this.orderNum = orderNum
+        this.parentId = parentId
+    }
 }
