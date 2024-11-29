@@ -89,8 +89,7 @@ class OrganizationService(
                    userRepository.findByEmail(req.email) ?: null,
                    it,
                    req.teamId?.let { getTeamEntity(id, it) },
-                   req.permission,
-                   MemberState.JOIN
+                   req.permission
                )
                memberRepository.save(member)
                return member.toRes()
