@@ -47,5 +47,8 @@ class OrganizationController(
     fun deleteTeam(@PathVariable id: Long, @PathVariable teamId: Long) =
         organizationService.deleteTeam(id, teamId)
 
+    @GetMapping("/{id}/members")
+    fun listMember(@PathVariable id: Long): List<MemberRes> =
+        organizationService.listMember(id)
 }
 
