@@ -69,6 +69,13 @@ class OrganizationService(
     fun listTeam(id: Long): List<TeamRes> =
         getRes(id).teams.orEmpty()
 
+    fun listMember(id: Long): List<MemberRes> =
+        getEntity(id)
+            .let {
+                memberRepository.findByOrganization(it)
+                    .map { member -> member.toRes() }
+            }
+
     @Transactional
     fun updateTeam(id: Long, teams: List<TeamUpdateReq>) {
         teams.map {
@@ -122,6 +129,9 @@ class OrganizationService(
 
     fun Team.toRes(): TeamRes =
         TeamRes(id, name, orderNum, parents?.id)
+
+    fun Member.toRes(): MemberRes =
+        MemberRes(id, name, email, team?.name, permission, state)
 
 
 }
