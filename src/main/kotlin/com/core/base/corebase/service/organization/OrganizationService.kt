@@ -77,6 +77,27 @@ class OrganizationService(
             }
 
     @Transactional
+    fun saveMember(id: Long, req: MemberReq): MemberRes {
+       getEntity(id)
+           .let {
+               if (memberRepository.existsByEmailAndOrganization(req.email, it)) {
+                   throw BaseException(ErrorCode.MEMBER_EMAIL_DUPLICATE, req.email)
+               }
+               val member = Member(
+                   req.email,
+                   req.name,
+                   userRepository.findByEmail(req.email) ?: null,
+                   it,
+                   req.teamId?.let { getTeamEntity(id, it) },
+                   req.permission,
+                   MemberState.JOIN
+               )
+               memberRepository.save(member)
+               return member.toRes()
+           }
+    }
+
+    @Transactional
     fun updateTeam(id: Long, teams: List<TeamUpdateReq>) {
         teams.map {
             getTeamEntity(id, it.id)
@@ -116,6 +137,12 @@ class OrganizationService(
                     .orElseThrow { BaseException(ErrorCode.ORGANIZATION_HAS_NOT_TEAM, teamId) }
             }
 
+    private fun getMemberEntity(organizationId: Long, memberId: Long) =
+        getEntity(organizationId)
+            .let {
+                memberRepository.findByOrganizationAndId(it, memberId)
+                    .orElseThrow { BaseException(ErrorCode.MEMBER_NOT_FOUND, memberId) }
+            }
 
     private fun getRes(id: Long) =
         getEntity(id)

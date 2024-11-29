@@ -9,4 +9,6 @@ import java.util.*
 interface MemberRepository : JpaRepository<Member, Long> {
     fun findByUser_UidAndOrganizationIdAndState(uid: UUID, organizationId: Long, state: MemberState): Member?
     fun findByOrganization(organization: Organization): List<Member>
+    fun findByOrganizationAndId(organization: Organization, id: Long): Optional<Member>
+    fun existsByEmailAndOrganization(email: String, organization: Organization): Boolean
 }
