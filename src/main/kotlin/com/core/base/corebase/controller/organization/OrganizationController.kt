@@ -50,5 +50,9 @@ class OrganizationController(
     @GetMapping("/{id}/members")
     fun listMember(@PathVariable id: Long): List<MemberRes> =
         organizationService.listMember(id)
+
+    @PostMapping("/{id}/members")
+    fun saveMember(@PathVariable id: Long, @RequestBody req: MemberReq): MemberRes =
+        organizationService.saveMember(id, req)
 }
 
