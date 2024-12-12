@@ -39,10 +39,14 @@ class Member(
     @JoinColumn(name = "uid", nullable = true)
     var user: User? = user; protected set
 
-
     fun isWait(): Boolean = state.equals(MemberState.WAIT)
+
     fun updateJoin(user: User) {
         this.user = user
         this.state = MemberState.JOIN
+    }
+
+    fun updateUser(user: User){
+        this.user = user
     }
 }

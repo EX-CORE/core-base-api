@@ -51,7 +51,12 @@ class AuthService(
             val googleInfoResponse = googleInfoClient.getInfo("Bearer ${accessTokenResponse.accessToken}")
             val user = userRepository.findByEmail(googleInfoResponse.email)
                 ?: userRepository.save(User(googleInfoResponse.name, googleInfoResponse.email, googleInfoResponse.picture))
-                    .also { accountRepository.save(Account(accessTokenResponse.refreshToken, UserState.ACTIVE, it)) }
+                    .also {
+                        accountRepository.save(Account(accessTokenResponse.refreshToken, UserState.ACTIVE, it))
+                    }.also {
+                        user -> memberRepository.findByEmailAndUserIsNull(user.email)
+                            .map { member -> member.updateUser(user) }
+                    }
 
             return AuthDto.LoginRes(
                 jwtProvider.generateAccessToken(user.uid),
