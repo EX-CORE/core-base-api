@@ -11,4 +11,5 @@ interface MemberRepository : JpaRepository<Member, Long> {
     fun findByOrganization(organization: Organization): List<Member>
     fun findByOrganizationAndId(organization: Organization, id: Long): Optional<Member>
     fun existsByEmailAndOrganization(email: String, organization: Organization): Boolean
+    fun findByEmailAndUserIsNull(email: String): List<Member>
 }
