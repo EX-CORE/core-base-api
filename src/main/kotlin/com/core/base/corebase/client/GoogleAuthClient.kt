@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody
 interface GoogleAuthClient {
 
     @PostMapping("/token", produces = ["application/json"])
-    fun getTokenByCode(@RequestBody request: GoogleDto.GoogleTokenReq): Object
-
-    @PostMapping("/token", produces = ["application/json"])
-    fun getTokenByCode2(@RequestBody request: GoogleDto.GoogleTokenReq): GoogleDto.GoogleTokenRes
+    fun getTokenByCode(@RequestBody request: GoogleDto.GoogleTokenReq): GoogleDto.GoogleTokenRes
 
 }
