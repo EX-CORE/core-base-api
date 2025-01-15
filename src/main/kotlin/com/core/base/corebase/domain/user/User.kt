@@ -19,6 +19,7 @@ class User(
 
     var name = name; protected set
 
+    @Column(unique = true)
     var email = email; protected set
 
     var profile = profile; protected set
