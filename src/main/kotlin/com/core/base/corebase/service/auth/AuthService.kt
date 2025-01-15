@@ -48,6 +48,7 @@ class AuthService(
             "authorization_code"
         ).let {
             val accessTokenResponse = googleAuthClient.getTokenByCode(it)
+            println(accessTokenResponse.toString())
             val googleInfoResponse = googleInfoClient.getInfo("Bearer ${accessTokenResponse.accessToken}")
             val user = userRepository.findByEmail(googleInfoResponse.email)
                 ?: userRepository.save(User(googleInfoResponse.name, googleInfoResponse.email, googleInfoResponse.picture))

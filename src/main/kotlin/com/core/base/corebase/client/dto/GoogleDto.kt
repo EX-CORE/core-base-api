@@ -26,10 +26,10 @@ object GoogleDto {
 
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
     class GoogleTokenRes(
-        val accessToken: String,
-        val expiresIn: Int,
-        val tokenType: String,
-        val scope: String,
+        val accessToken: String?,
+        val expiresIn: Int?,
+        val tokenType: String?,
+        val scope: String?,
         val refreshToken: String
     )
 
