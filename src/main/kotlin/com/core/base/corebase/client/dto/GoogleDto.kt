@@ -30,7 +30,7 @@ object GoogleDto {
         val expiresIn: Int?,
         val tokenType: String?,
         val scope: String?,
-        val refreshToken: String
+        val refreshToken: String?
     )
 
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
