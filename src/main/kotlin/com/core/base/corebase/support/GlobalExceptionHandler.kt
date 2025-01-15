@@ -13,11 +13,13 @@ class GlobalExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<BaseExceptionRes> {
         val errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+        e.printStackTrace()
         return ResponseEntity(BaseExceptionRes(errorCode, e.message), errorCode.code)
     }
 
     @ExceptionHandler(BaseException::class)
     fun handleBaseException(e: BaseException): ResponseEntity<BaseExceptionRes> {
+        e.printStackTrace()
         return ResponseEntity(BaseExceptionRes(e.errorCode, e.reason), e.errorCode.code)
     }
 
