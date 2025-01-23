@@ -11,7 +11,7 @@ class Account(
     user: User
 ) {
     @Id
-    @Column(name = "uid", insertable = false, updatable = false, columnDefinition = "BINARY(16)")
+    @Column(name = "uid", insertable = false, updatable = false, columnDefinition = "uuid")
     var uid: UUID = user.uid
 
     @MapsId("uid")

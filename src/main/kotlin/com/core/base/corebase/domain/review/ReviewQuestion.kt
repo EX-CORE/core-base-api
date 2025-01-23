@@ -8,7 +8,7 @@ import java.util.*
 class ReviewQuestion(
     question: String,
     type: QuestionType,
-    limit: Int?,
+    range: Int?,
     orderNum: Int,
     useScore: Boolean,
     useMultiSelect: Boolean,
@@ -21,7 +21,7 @@ class ReviewQuestion(
     var question = question; protected set
     @Enumerated(EnumType.STRING)
     var type = type; protected set
-    var limit = limit; protected set
+    var range = range; protected set
     var orderNum = orderNum; protected set
     var useScore = useScore; protected set
     var useMultiSelect = useMultiSelect; protected set
