@@ -5,7 +5,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.GenericGenerator
 import java.util.*
 
-@Entity( name = "user")
+@Entity( name = "users")
 class User(
     name: String,
     email: String,
@@ -14,7 +14,7 @@ class User(
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "uuid")
     var uid: UUID = UUID.randomUUID()
 
     var name = name; protected set
