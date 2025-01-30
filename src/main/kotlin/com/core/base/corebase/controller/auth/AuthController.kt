@@ -19,8 +19,8 @@ class AuthController(
 
     @ResponseBody
     @PostMapping("/login")
-    fun login(@RequestParam("code") code: String): AuthDto.LoginRes =
-        authService.login(code)
+    fun login(@RequestParam("code") code: String, @RequestParam("type") type: String): AuthDto.LoginRes =
+        authService.login(code, type)
 
     @ResponseBody
     @PostMapping("/token-refresh")
