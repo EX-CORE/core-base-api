@@ -39,12 +39,16 @@ class AuthService(
     }
 
     @Transactional
-    fun login(code: String): AuthDto.LoginRes = with(googleProperties) {
+    fun login(code: String, type: String): AuthDto.LoginRes = with(googleProperties) {
+        var resultRedirectUrl =  redirectUrl
+        if ("LOCAL" == type ){
+            resultRedirectUrl = "http://localhost:3000/login"
+        }
         GoogleDto.GoogleTokenReq(
             code,
             clientId,
             clientSecret,
-            "${redirectUrl}",
+            "${resultRedirectUrl}",
             "authorization_code"
         ).let {
             val accessTokenResponse = googleAuthClient.getTokenByCode(it)
