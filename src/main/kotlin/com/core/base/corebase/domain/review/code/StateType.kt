@@ -1,10 +1,11 @@
 package com.core.base.corebase.domain.review.code
 
 enum class StateType {
-    TEMP,
+    READY,
     PROCESS,
-    PAUSE,
+    STOPPED,
+    DONE,
     DELETED;
 
-    fun isInActive() = mutableListOf(PAUSE, DELETED).contains(this)
+    fun isInActive() = mutableListOf(STOPPED, DONE, DELETED).contains(this)
 }

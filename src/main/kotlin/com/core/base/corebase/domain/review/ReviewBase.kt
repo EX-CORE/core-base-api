@@ -47,13 +47,13 @@ class ReviewBase(
     @Enumerated(EnumType.STRING)
     var state = state; protected set
 
-    fun pause() {
-        if (!validPause())
+    fun stop() {
+        if (!validStop())
             throw BaseException(ErrorCode.REVIEW_NOT_FOUND, id)
-        this.state = StateType.PAUSE;
+        this.state = StateType.STOPPED;
     }
 
-    private fun validPause() : Boolean {
+    private fun validStop() : Boolean {
         return if (state.isInActive()) false
         else LocalDate.now().let {
             this.surveyPeriod.isBefore(it) || this.surveyPeriod.between(it)
