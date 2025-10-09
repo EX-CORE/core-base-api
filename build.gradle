@@ -78,4 +78,5 @@ tasks.register("stage") {
 }
 bootJar {
     archiveFileName = "app.jar"  // 항상 단일 JAR 이름
+    destinationDirectory = file("$rootDir/build/libs") // 루트 build/libs로 출력
 }
