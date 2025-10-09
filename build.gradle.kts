@@ -1,113 +1,130 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-plugins {
-	id("org.springframework.boot") version "3.1.2"
-	id("io.spring.dependency-management") version "1.1.4"
-	kotlin("jvm") version "1.9.22"
-	kotlin("plugin.spring") version "1.9.22"
-	kotlin("plugin.allopen") version "1.9.22" // noArg 플러그인 추가
-	kotlin("plugin.noarg") version "1.9.22" // noArg 플러그인 추가
-}
-
-buildscript {
-	val kotlinVersion by extra("1.7.10")
-	val springBootVersion by extra("2.7.5")
-	val springCloudVersion by extra("2021.0.3")
-	val queryDslVersion by extra("5.0.0")
-
-	val springfoxVersion by extra("3.0.0")
-	val modelmapperVersion by extra("3.1.0")
-
-	repositories {
-		mavenCentral()
-	}
-
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-		classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
-		classpath("org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion")
-	}
-}
-allprojects {
-
-}
-
-group = "com.core.base"
-version = "0.0.1-SNAPSHOT"
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_17
-}
-
-allOpen {
-	annotation("jakarta.persistence.Entity")
-	annotation("jakarta.persistence.MappedSuperclass")
-	annotation("jakarta.persistence.Embeddable")
-}
-
-noArg {
-	annotation("jakarta.persistence.Entity")
-	annotation("jakarta.persistence.MappedSuperclass")
-	annotation("jakarta.persistence.Embeddable")
-}
-
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
-
-repositories {
-	mavenCentral()
-}
-
-tasks.compileJava {
-	options.compilerArgs.add("--add-modules=java.xml.bind")
-}
-
-dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
-	implementation("io.jsonwebtoken:jjwt:0.9.1")
-	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	runtimeOnly("org.postgresql:postgresql")
-
-	compileOnly ("org.projectlombok:lombok")
-	annotationProcessor ("org.projectlombok:lombok")
-
-	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jpa")
-	// Add these dependencies
-
-	implementation ("javax.xml.bind:jaxb-api:2.3.1")
-	implementation ("org.glassfish.jaxb:jaxb-runtime:2.3.1")
-
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-	testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
-	testImplementation("io.kotest:kotest-assertions-core:5.9.1")
-	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
-	testImplementation("com.ninja-squad:springmockk:4.0.2")
-
-	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.6.2")
-}
-
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs += "-Xjsr305=strict"
-		jvmTarget = "17"
-	}
-}
-
-tasks.withType<Test> {
-	useJUnitPlatform()
-}
-
-tasks.getByName<Jar>("jar") {
-	enabled = false
-}
+//import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+//
+//plugins {
+//	id("org.springframework.boot") version "3.1.2"
+//	id("io.spring.dependency-management") version "1.1.4"
+//	kotlin("jvm") version "1.9.22"
+//	kotlin("plugin.spring") version "1.9.22"
+//	kotlin("plugin.allopen") version "1.9.22" // noArg 플러그인 추가
+//	kotlin("plugin.noarg") version "1.9.22" // noArg 플러그인 추가
+//}
+//
+//buildscript {
+//	val kotlinVersion by extra("1.7.10")
+//	val springBootVersion by extra("2.7.5")
+//	val springCloudVersion by extra("2021.0.3")
+//	val queryDslVersion by extra("5.0.0")
+//
+//	val springfoxVersion by extra("3.0.0")
+//	val modelmapperVersion by extra("3.1.0")
+//
+//	repositories {
+//		mavenCentral()
+//	}
+//
+//	dependencies {
+//		classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+//		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+//		classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
+//		classpath("org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion")
+//	}
+//}
+//allprojects {
+//
+//}
+//
+//group = "com.core.base"
+//version = "0.0.1-SNAPSHOT"
+//
+//java {
+//	sourceCompatibility = JavaVersion.VERSION_17
+//}
+//
+//allOpen {
+//	annotation("jakarta.persistence.Entity")
+//	annotation("jakarta.persistence.MappedSuperclass")
+//	annotation("jakarta.persistence.Embeddable")
+//}
+//
+//noArg {
+//	annotation("jakarta.persistence.Entity")
+//	annotation("jakarta.persistence.MappedSuperclass")
+//	annotation("jakarta.persistence.Embeddable")
+//}
+//
+//configurations {
+//	compileOnly {
+//		extendsFrom(configurations.annotationProcessor.get())
+//	}
+//}
+//
+//repositories {
+//	mavenCentral()
+//}
+//
+//tasks.compileJava {
+//	options.compilerArgs.add("--add-modules=java.xml.bind")
+//}
+//
+//dependencies {
+//	implementation("org.springframework.boot:spring-boot-starter-web")
+//	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+//	implementation("org.jetbrains.kotlin:kotlin-reflect")
+//	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
+//	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+//	implementation("io.jsonwebtoken:jjwt:0.9.1")
+//	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+//	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+//	runtimeOnly("org.postgresql:postgresql")
+//
+//	compileOnly ("org.projectlombok:lombok")
+//	annotationProcessor ("org.projectlombok:lombok")
+//
+//	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jpa")
+//	// Add these dependencies
+//
+//	implementation ("javax.xml.bind:jaxb-api:2.3.1")
+//	implementation ("org.glassfish.jaxb:jaxb-runtime:2.3.1")
+//
+//	developmentOnly("org.springframework.boot:spring-boot-devtools")
+//	testImplementation("org.springframework.boot:spring-boot-starter-test")
+//
+//	testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
+//	testImplementation("io.kotest:kotest-assertions-core:5.9.1")
+//	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
+//	testImplementation("com.ninja-squad:springmockk:4.0.2")
+//
+//	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.6.2")
+//}
+//
+//tasks.withType<KotlinCompile> {
+//	kotlinOptions {
+//		freeCompilerArgs += "-Xjsr305=strict"
+//		jvmTarget = "17"
+//	}
+//}
+//
+//tasks.withType<Test> {
+//	useJUnitPlatform()
+//}
+//
+//tasks.getByName<Jar>("jar") {
+//	enabled = false
+//}
+//
+//// Fails the build if any Kotlin files remain under src/main/kotlin/com/core/base/corebase
+//tasks.register("failIfKotlinUnderCorebase") {
+//	doLast {
+//		val root = file("src/main/kotlin/com/core/base/corebase")
+//		if (!root.exists()) return@doLast
+//		val remains = root.walkTopDown().filter { it.isFile && it.extension == "kt" }.toList()
+//		if (remains.isNotEmpty()) {
+//			val list = remains.joinToString("\n") { it.relativeTo(projectDir).path }
+//			throw GradleException("Kotlin files remain under corebase:\n$list")
+//		}
+//	}
+//}
+//
+//tasks.named("build").configure {
+//	finalizedBy("failIfKotlinUnderCorebase")
+//}
