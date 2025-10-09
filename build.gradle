@@ -76,3 +76,6 @@ dependencyManagement {
 tasks.register("stage") {
     dependsOn("clean", "build")
 }
+bootJar {
+    archiveFileName = "app.jar"  // 항상 단일 JAR 이름
+}
