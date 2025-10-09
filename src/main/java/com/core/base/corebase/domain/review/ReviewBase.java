@@ -46,8 +46,7 @@ public class ReviewBase {
 
     private String secretKey;
 
-    @Enumerated(EnumType.STRING)
-    private StateType state;
+    private String state;
 
     protected ReviewBase() {
         // For JPA
@@ -62,18 +61,18 @@ public class ReviewBase {
         this.reviewPeriod = reviewPeriod;
         this.organization = organization;
         this.secretKey = secretKey;
-        this.state = state;
+        this.state = state.name();
     }
 
     public void stop() {
         if (!validStop()) {
             throw new BaseException(ErrorCode.REVIEW_NOT_FOUND, id);
         }
-        this.state = StateType.STOPPED;
+        this.state = StateType.STOPPED.name();
     }
 
     private boolean validStop() {
-        if (state.isInActive()) {
+        if (getState().isInActive()) {
             return false;
         }
         LocalDate today = LocalDate.now();
@@ -99,5 +98,12 @@ public class ReviewBase {
     public void removeDefaultScoreChoice(ReviewChoice choice) {
         defaultScoreChoices.remove(choice);
         choice.setReviewBase(null);
+    }
+
+    public StateType getState() {
+        if(state == null) {
+            return null;
+        }
+        return StateType.valueOf(state);
     }
 }

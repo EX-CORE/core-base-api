@@ -22,9 +22,8 @@ public class Account {
     @JoinColumn(name = "uid", referencedColumnName = "uid", insertable = false, updatable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserState state;
+    private String state;
 
     @Column(nullable = false)
     private String refreshToken;
@@ -36,16 +35,22 @@ public class Account {
     public Account(String refreshToken, UserState state, User user) {
         this.uid = user.getUid();
         this.refreshToken = refreshToken;
-        this.state = state;
+        this.state = state.name();
         this.user = user;
     }
 
-    // Business methods
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
     public void updateState(UserState newState) {
-        this.state = newState;
+        this.state = newState.name();
+    }
+
+    public UserState getUserState() {
+        if(state == null) {
+            return null;
+        }
+        return UserState.valueOf(this.state);
     }
 }

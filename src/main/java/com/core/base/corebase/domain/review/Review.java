@@ -19,9 +19,8 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReviewState state;
+    private String state;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_member_id", nullable = false)
@@ -46,7 +45,7 @@ public class Review {
         this.reviewMember = reviewMember;
         this.member = member;
         this.review = review;
-        this.state = state != null ? state : ReviewState.BEFORE;
+        this.state = state != null ? state.name() : ReviewState.BEFORE.name();
     }
 
     // Helper methods for bidirectional relationship
@@ -58,5 +57,12 @@ public class Review {
     public void removeAnswer(ReviewAnswer answer) {
         answers.remove(answer);
         answer.setReview(null);
+    }
+
+    public ReviewState getState() {
+        if(this.state == null) {
+            return null;
+        }
+        return ReviewState.valueOf(state);
     }
 }

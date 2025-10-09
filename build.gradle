@@ -7,7 +7,7 @@ plugins {
 ext {
     springBootVersion = '3.2.2'
     queryDslVersion = "5.0.0"
-    set('springCloudVersion', "2024.0.2")
+    set('springCloudVersion', "2023.0.2")
 }
 
 configurations {

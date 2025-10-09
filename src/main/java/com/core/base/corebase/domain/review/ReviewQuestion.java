@@ -18,9 +18,8 @@ public class ReviewQuestion {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String question;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private QuestionType type;
+    private String type;
 
     private Integer range;
 
@@ -45,11 +44,18 @@ public class ReviewQuestion {
                          Integer orderNum, Boolean useScore,
                          Boolean useMultiSelect, ReviewSection reviewSection) {
         this.question = question;
-        this.type = type;
+        this.type = type.name();
         this.range = range;
         this.orderNum = orderNum;
         this.useScore = useScore;
         this.useMultiSelect = useMultiSelect;
         this.reviewSection = reviewSection;
+    }
+
+    public QuestionType getQuestionType() {
+        if(this.type == null) {
+            return null;
+        }
+        return QuestionType.valueOf(type);
     }
 }
