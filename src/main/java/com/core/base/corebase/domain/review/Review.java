@@ -1,68 +1,82 @@
+// Update Review.java
 package com.core.base.corebase.domain.review;
 
-import com.core.base.corebase.domain.review.code.ReviewState;
 import com.core.base.corebase.domain.user.Member;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+@EnableJpaAuditing
 @Getter
-@Setter
 @Entity
-@Table(name = "review")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "reviews")
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String state;
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private ReviewStatus status = ReviewStatus.SCHEDULED;
+
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_member_id", nullable = false)
-    private ReviewMember reviewMember;
+    @JoinColumn(name = "creator_id", nullable = false)
+    private Member creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "organization_id", nullable = false)
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id", nullable = false)
-    private Review review;
+    @JoinColumn(name = "review_form_id", nullable = false)
+    private ReviewForm reviewForm;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewAnswer> answers = new ArrayList<>();
+    private List<ReviewParticipant> participants = new ArrayList<>();
 
-    protected Review() {
-        // For JPA
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Builder
+    public Review(String name, LocalDate startDate, LocalDate endDate, Member creator, ReviewForm reviewForm) {
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.creator = creator;
+        this.reviewForm = reviewForm;
+        updateStatus();
     }
 
-    public Review(ReviewMember reviewMember, Member member, Review review, ReviewState state) {
-        this.reviewMember = reviewMember;
-        this.member = member;
-        this.review = review;
-        this.state = state != null ? state.name() : ReviewState.BEFORE.name();
-    }
-
-    // Helper methods for bidirectional relationship
-    public void addAnswer(ReviewAnswer answer) {
-        answers.add(answer);
-        answer.setReview(this);
-    }
-
-    public void removeAnswer(ReviewAnswer answer) {
-        answers.remove(answer);
-        answer.setReview(null);
-    }
-
-    public ReviewState getState() {
-        if(this.state == null) {
-            return null;
+    public void updateStatus() {
+        LocalDate today = LocalDate.now();
+        if (today.isBefore(startDate)) {
+            this.status = ReviewStatus.SCHEDULED;
+        } else if (today.isAfter(endDate)) {
+            this.status = ReviewStatus.COMPLETED;
+        } else {
+            this.status = ReviewStatus.IN_PROGRESS;
         }
-        return ReviewState.valueOf(state);
+    }
+
+    public void addParticipant(ReviewParticipant participant) {
+        this.participants.add(participant);
     }
 }

@@ -2,11 +2,16 @@ package com.core.base.corebase.domain.review;
 
 import com.core.base.corebase.domain.review.code.QuestionType;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "review_question")
 public class ReviewQuestion {
@@ -17,6 +22,12 @@ public class ReviewQuestion {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String question;
+
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private boolean required;
 
     @Column(nullable = false)
     private String type;
@@ -33,24 +44,24 @@ public class ReviewQuestion {
     private Boolean useMultiSelect;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_section_id", nullable = false)
-    private ReviewSection reviewSection;
+    @JoinColumn(name = "section_id", nullable = false)
+    private ReviewFormSection section;  // Changed from reviewSection to section
 
-    protected ReviewQuestion() {
-        // For JPA
-    }
-
+    // Update the constructor parameter
     public ReviewQuestion(String question, QuestionType type, Integer range,
-                         Integer orderNum, Boolean useScore,
-                         Boolean useMultiSelect, ReviewSection reviewSection) {
+        Integer orderNum, Boolean useScore,
+        Boolean useMultiSelect, ReviewFormSection section) {  // Changed parameter name
         this.question = question;
         this.type = type.name();
         this.range = range;
         this.orderNum = orderNum;
         this.useScore = useScore;
         this.useMultiSelect = useMultiSelect;
-        this.reviewSection = reviewSection;
+        this.section = section;  // Update this line
     }
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RatingOption> ratingOptions = new ArrayList<>();
 
     public QuestionType getQuestionType() {
         if(this.type == null) {

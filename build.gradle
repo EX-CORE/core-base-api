@@ -76,7 +76,11 @@ dependencyManagement {
 tasks.register("stage") {
     dependsOn("clean", "build")
 }
+
 bootJar {
-    archiveFileName = "app.jar"  // 항상 단일 JAR 이름
-    destinationDirectory = file("$rootDir/build/libs") // 루트 build/libs로 출력
+    archiveFileName = 'app.jar'
+}
+
+jar {
+    enabled = false
 }
