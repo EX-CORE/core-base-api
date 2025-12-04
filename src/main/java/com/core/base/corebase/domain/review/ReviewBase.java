@@ -3,9 +3,13 @@ package com.core.base.corebase.domain.review;
 import com.core.base.corebase.common.code.ErrorCode;
 import com.core.base.corebase.common.exception.BaseException;
 import com.core.base.corebase.domain.organization.Organization;
+import com.core.base.corebase.domain.review.code.ReviewState;
 import com.core.base.corebase.domain.review.code.StateType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -13,8 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
+@Builder
 @Entity
+@AllArgsConstructor
 @Table(name = "review_base")
 public class ReviewBase {
 
@@ -46,7 +51,8 @@ public class ReviewBase {
 
     private String secretKey;
 
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private StateType state;
 
     protected ReviewBase() {
         // For JPA
@@ -61,14 +67,14 @@ public class ReviewBase {
         this.reviewPeriod = reviewPeriod;
         this.organization = organization;
         this.secretKey = secretKey;
-        this.state = state.name();
+        this.state = state;
     }
 
     public void stop() {
         if (!validStop()) {
             throw new BaseException(ErrorCode.REVIEW_NOT_FOUND, id);
         }
-        this.state = StateType.STOPPED.name();
+        this.state = StateType.STOPPED;
     }
 
     private boolean validStop() {
@@ -98,12 +104,5 @@ public class ReviewBase {
     public void removeDefaultScoreChoice(ReviewChoice choice) {
         defaultScoreChoices.remove(choice);
         choice.setReviewBase(null);
-    }
-
-    public StateType getState() {
-        if(state == null) {
-            return null;
-        }
-        return StateType.valueOf(state);
     }
 }

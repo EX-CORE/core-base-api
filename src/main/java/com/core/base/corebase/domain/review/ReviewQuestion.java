@@ -2,11 +2,16 @@ package com.core.base.corebase.domain.review;
 
 import com.core.base.corebase.domain.review.code.QuestionType;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "review_question")
 public class ReviewQuestion {
@@ -19,7 +24,8 @@ public class ReviewQuestion {
     private String question;
 
     @Column(nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private QuestionType type;
 
     private Integer range;
 
@@ -36,6 +42,9 @@ public class ReviewQuestion {
     @JoinColumn(name = "review_section_id", nullable = false)
     private ReviewSection reviewSection;
 
+    @OneToMany(mappedBy = "reviewQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewChoice> choices = new ArrayList<>();
+
     protected ReviewQuestion() {
         // For JPA
     }
@@ -44,18 +53,11 @@ public class ReviewQuestion {
                          Integer orderNum, Boolean useScore,
                          Boolean useMultiSelect, ReviewSection reviewSection) {
         this.question = question;
-        this.type = type.name();
+        this.type = type;
         this.range = range;
         this.orderNum = orderNum;
         this.useScore = useScore;
         this.useMultiSelect = useMultiSelect;
         this.reviewSection = reviewSection;
-    }
-
-    public QuestionType getQuestionType() {
-        if(this.type == null) {
-            return null;
-        }
-        return QuestionType.valueOf(type);
     }
 }

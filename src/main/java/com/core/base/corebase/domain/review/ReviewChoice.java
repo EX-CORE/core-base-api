@@ -1,12 +1,15 @@
 package com.core.base.corebase.domain.review;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "review_choice")
 public class ReviewChoice {
     
@@ -21,14 +24,20 @@ public class ReviewChoice {
     private Integer orderNum;
     
     private Integer score;
-    
+
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_answer_id", nullable = false)
     private ReviewAnswer reviewAnswer;
-    
+
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_base_id", nullable = false)
     private ReviewBase reviewBase;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_question_id", nullable = false)
+    private ReviewQuestion reviewQuestion;
     
     protected ReviewChoice() {
         // For JPA
