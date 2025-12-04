@@ -73,14 +73,7 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
-tasks.register("stage") {
-    dependsOn("clean", "build")
-}
 
 bootJar {
     archiveFileName = 'app.jar'
-}
-
-jar {
-    enabled = false
 }
